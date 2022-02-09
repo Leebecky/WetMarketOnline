@@ -266,3 +266,5 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
+.vs/WetMarketOnline/v15/.suo
+.vs/WetMarketOnline/v15/Server/sqlite3/storage.ide-wal
