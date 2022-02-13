@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WetMarketOnline")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("EWM")]
+[assembly: AssemblyDescription("Wet Market Online")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WetMarketOnline")]

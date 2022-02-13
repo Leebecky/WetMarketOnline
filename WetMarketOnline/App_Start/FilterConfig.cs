@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace WetMarketOnline
+namespace EWM
 {
     public class FilterConfig
     {
