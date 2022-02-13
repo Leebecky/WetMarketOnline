@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace WetMarketOnline
+namespace EWM
 {
     public class BundleConfig
     {
