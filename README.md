@@ -1,2 +1,2 @@
 # WetMarketOnline
- Online shopping platform for wet market - Zhao Rui FYP Project
+ Online shopping platform for wet market - ZR FYP Project
