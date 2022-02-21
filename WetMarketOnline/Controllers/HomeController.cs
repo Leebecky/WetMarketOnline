@@ -1,7 +1,10 @@
-﻿using log4net;
+﻿using EWM.HelperClass;
+using EWM.Models;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,8 +20,8 @@ namespace EWM.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
-
+            
+            ViewBag.Message = "About Page";
             return View();
         }
 

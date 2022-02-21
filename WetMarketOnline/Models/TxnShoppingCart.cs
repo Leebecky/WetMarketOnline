@@ -4,17 +4,28 @@ namespace EWM.Models
 {
     public class TxnShoppingCart
     {
-        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(TxnShoppingCart));
+        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static string ObjectName = typeof(TxnShoppingCart).AssemblyQualifiedName;
 
-        string CartId { get; set; }
-        string CustomerId { get; set; }
-        string ProductId { get; set; }
-        int Quantity { get; set; }
-        string Status { get; set; }
-        DateTime CreatedDate { get; set; }
-        string CreatedBy { get; set; }
-        DateTime UpdatedDate { get; set; }
-        string UpdatedBy { get; set; }
+        public string CartId { get; set; }
+        public string CustomerId { get; set; }
+        public string ProductId { get; set; }
+        public int Quantity { get; set; }
+        public string Status { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+
+        private string OriCartId { get; set; }
+        private string OriCustomerId { get; set; }
+        private string OriProductId { get; set; }
+        private int OriQuantity { get; set; }
+        private string OriStatus { get; set; }
+        private DateTime OriCreatedDate { get; set; }
+        private string OriCreatedBy { get; set; }
+        private DateTime OriUpdatedDate { get; set; }
+        private string OriUpdatedBy { get; set; }
 
         // Default Constructor
         public TxnShoppingCart() { }
