@@ -1,5 +1,7 @@
-﻿using System;
+﻿using EWM.HelperClass;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -42,7 +44,75 @@ namespace EWM.Models
         // Default Constructor
         public MstMerchant() { }
 
-    
+        // Constructor - Retrieve from Db based on PK
+        public static MstMerchant GetMstMerchant(string merchantId)
+        {
+            MstMerchant merchant = new MstMerchant();
+            merchant.MerchantId = merchantId;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
+            merchant = (MstMerchant)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return merchant;
+        }
+
+        #region Methods
+
+        //? Insert new record
+        public int CreateMstMerchant(string userName = "")
+        {
+            this.MerchantId = Guid.NewGuid().ToString();
+            this.Status = "Active";
+            this.CreatedDate = DateTime.Now;
+            this.UpdatedDate = DateTime.Now;
+            this.CreatedBy = userName;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Insert");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Update existing record
+        public int UpdateMstMerchant(string userName = "")
+        {
+            this.UpdatedDate = DateTime.Now;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Update");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Delete existing record
+        public int DeleteMstMerchant()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Insert new record
+        public MstMerchant SelectMstMerchant(string filterType = "Column")
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
+            MstMerchant data = (MstMerchant)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return data;
+        }
+
+        //? Runs a Select statement and returns the number of rows found
+        public int CheckMstMerchant()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType: "All");
+            int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+
+            return data;
+        }
+        #endregion
 
 
     }

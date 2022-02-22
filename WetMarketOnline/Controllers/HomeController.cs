@@ -12,7 +12,7 @@ namespace EWM.Controllers
 {
     public class HomeController : Controller
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(HomeController));
+        private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public ActionResult Index()
         {
             return View();
@@ -20,7 +20,6 @@ namespace EWM.Controllers
 
         public ActionResult About()
         {
-            
             ViewBag.Message = "About Page";
             return View();
         }

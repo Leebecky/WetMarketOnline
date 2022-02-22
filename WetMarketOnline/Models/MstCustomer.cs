@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using EWM.HelperClass;
 using log4net;
 
 namespace EWM.Models
@@ -41,10 +43,77 @@ namespace EWM.Models
         private string OriUpdatedBy { get; set; }
 
         // Default Constructor
-        public MstCustomer() { Log.Debug("Some message here"); }
+        public MstCustomer() {}
 
-    
+        // Constructor - Retrieve from Db based on PK
+        public static MstCustomer GetMstCustomer(string customerId)
+        {
+            MstCustomer merchant = new MstCustomer();
+            merchant.CustomerId = customerId;
 
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
+            merchant = (MstCustomer)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return merchant;
+        }
+
+        #region Methods
+
+        //? Insert new record
+        public int CreateMstCustomer(string userName = "")
+        {
+            this.CustomerId = Guid.NewGuid().ToString();
+            this.Status = "Active";
+            this.CreatedDate = DateTime.Now;
+            this.UpdatedDate = DateTime.Now;
+            this.CreatedBy = userName;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Insert");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Update existing record
+        public int UpdateMstCustomer(string userName = "")
+        {
+            this.UpdatedDate = DateTime.Now;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Update");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Delete existing record
+        public int DeleteMstCustomer()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Insert new record
+        public MstCustomer SelectMstCustomer(string filterType = "Column")
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
+            MstCustomer data = (MstCustomer)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return data;
+        }
+
+        //? Runs a Select statement and returns the number of rows found
+        public int CheckMstCustomer()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType: "All");
+            int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+
+            return data;
+        }
+        #endregion
 
     }
 }

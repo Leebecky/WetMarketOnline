@@ -169,10 +169,10 @@ namespace EWM.HelperClass
                             isOriNotNull = (oriData.GetValue(dbObject) != null);
                         }
 
-                        if (!isOriNotNull) { continue;  }
+                        if (!isOriNotNull) { continue; }
 
                         sqlQueryColumns = string.Concat(sqlQueryColumns, colName, " = @ori_", colName, " and ");
-                        
+
                         cmd.Parameters.AddWithValue(string.Concat("@ori_", colName), oriData.GetValue(dbObject));
                     }
                 }
@@ -277,21 +277,52 @@ namespace EWM.HelperClass
                         string colName = ToSnakeCase(property.Name);
                         var dataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
                         dynamic propValue = null;
+
+                        var exists = Enumerable.Range(0, dr.FieldCount).Any(i => string.Equals(dr.GetName(i), colName, StringComparison.OrdinalIgnoreCase));
+
                         if (dataType == typeof(String))
                         {
-                            propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? "" : dr[colName];
+                            if (exists)
+                            {
+                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(string) : dr[colName];
+                            }
+                            else
+                            {
+                                propValue = default(string);
+                            }
                         }
                         else if (dataType == typeof(DateTime))
                         {
-                            propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(DateTime) : dr[colName];
+                            if (exists)
+                            {
+                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(DateTime) : dr[colName];
+                            }
+                            else
+                            {
+                                propValue = default(DateTime);
+                            }
                         }
                         else if (dataType == typeof(Decimal) || dataType == typeof(int))
                         {
-                            propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(int) : dr[colName];
+                            if (exists)
+                            {
+                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(int) : dr[colName];
+                            }
+                            else
+                            {
+                                propValue = default(int);
+                            }
                         }
                         else if (dataType == typeof(bool))
                         {
-                            propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(bool) : dr[colName];
+                            if (exists)
+                            {
+                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(bool) : dr[colName];
+                            }
+                            else
+                            {
+                                propValue = default(bool);
+                            }
                         }
 
                         property.SetValue(dbObject, propValue);
@@ -320,7 +351,7 @@ namespace EWM.HelperClass
         }
 
         //? Executes the given SQL Command and returns the rows affected 
-        public static int ExecuteQueryCommand(SqlCommand sqlCmd)
+        public static int ExecuteQueryCommand_RowsAffected(SqlCommand sqlCmd, bool isSelect = false)
         {
             SqlConnection conn = new SqlConnection(DbConnectionString);
 
@@ -329,7 +360,15 @@ namespace EWM.HelperClass
             {
                 sqlCmd.Connection = conn;
                 conn.Open();
-                rowsAffected = sqlCmd.ExecuteNonQuery();
+
+                if (isSelect)
+                {
+                    rowsAffected = (sqlCmd.ExecuteReader().HasRows) ? 1 : 0;
+                }
+                else
+                {
+                    rowsAffected = sqlCmd.ExecuteNonQuery();
+                }
 
             }
             catch (Exception ex)

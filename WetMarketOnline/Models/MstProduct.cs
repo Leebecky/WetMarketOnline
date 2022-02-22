@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EWM.HelperClass;
+using System;
+using System.Data.SqlClient;
 
 namespace EWM.Models
 {
@@ -37,7 +39,64 @@ namespace EWM.Models
         // Default Constructor
         public MstProduct() { }
 
-    
+        // Constructor - Retrieve from Db based on PK
+        public static MstProduct GetMstProduct(string productId)
+        {
+            MstProduct merchant = new MstProduct();
+            merchant.ProductId = productId;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
+            merchant = (MstProduct)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return merchant;
+        }
+
+        #region Methods
+
+        //? Insert new record
+        public int CreateMstProduct(string userName = "")
+        {
+            this.CreatedDate = DateTime.Now;
+            this.UpdatedDate = DateTime.Now;
+            this.CreatedBy = userName;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Insert");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Update existing record
+        public int UpdateMstProduct(string userName = "")
+        {
+            this.UpdatedDate = DateTime.Now;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Update");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Delete existing record
+        public int DeleteMstProduct()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Insert new record
+        public MstProduct SelectMstProduct(string filterType = "Column")
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
+            MstProduct data = (MstProduct)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return data;
+        }
+        #endregion
 
 
     }

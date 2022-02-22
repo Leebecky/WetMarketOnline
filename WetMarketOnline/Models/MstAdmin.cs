@@ -52,17 +52,19 @@ namespace EWM.Models
         //? Insert new record
         public int CreateMstAdmin(string userName = "")
         {
+            this.AdminId = Guid.NewGuid().ToString();
+            this.Status = "Active";
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
             this.CreatedBy = userName;
             this.UpdatedBy = userName;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Insert");
-            int rowsAffected = DatabaseManager.ExecuteQueryCommand(cmd);
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
 
             return rowsAffected;
         }
-        
+
         //? Update existing record
         public int UpdateMstAdmin(string userName = "")
         {
@@ -70,7 +72,7 @@ namespace EWM.Models
             this.UpdatedBy = userName;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Update");
-            int rowsAffected = DatabaseManager.ExecuteQueryCommand(cmd);
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
 
             return rowsAffected;
         }
@@ -79,11 +81,28 @@ namespace EWM.Models
         public int DeleteMstAdmin()
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
-            int rowsAffected = DatabaseManager.ExecuteQueryCommand(cmd);
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
 
             return rowsAffected;
         }
 
+        //? Insert new record
+        public MstAdmin SelectMstAdmin(string filterType = "Column")
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
+            MstAdmin data = (MstAdmin)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+
+            return data;
+        }
+
+        //? Runs a Select statement and returns the number of rows found
+        public int CheckMstAdmin()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType: "All");
+            int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+
+            return data;
+        }
         #endregion
     }
 }

@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "Account Creation";
+}
+
+
+<script type="text/javascript">
+
+    //function UpdateUi() {
+    //    var userType = $("#userType").val();
+
+    //    if (userType == "Admin") {
+    //        $("#AddressGroup").css("display", "none");
+    //    } else {
+    //        $("#AddressGroup").css("display", "flex");
+    //    }
+    //}
+
+    $(document).ready(() => {
+
+        $("#Password").focusout(e => {
+            var password = $("#Password").val();
+            if (password.length < 8) {
+                $("#PasswordValidation").text("Password must at least 8 characters!");
+            }
+        })
+
+        $("#Password").on("input", () => {
+            var password = $("#Password").val();
+
+            if (password.length >= 8) {
+                $("#PasswordValidation").text("");
+            }
+        })
+    });
+</script>
+
+<h2>Sign Up</h2>
+<p class="text-danger">@ViewBag.Error</p>
+<div class="container ">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 ">
+            <form action="AccountCreation" method="post" id="SignUpForm">
+
+                @* Username *@
+                <div class="row mb-3">
+                    <label for="Username" class="col-lg-4 col-form-label">Username</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" id="Username" name="username" placeholder="Username" required>
+                    </div>
+
+                </div>
+                @* Password *@
+                <div class="row mb-3">
+                    <label for="Password" class="col-lg-4 col-form-label">Password</label>
+                    <div class="col-lg-8">
+                        <input type="password" class="form-control" id="Password" name="password" placeholder="Password" required>
+                        <span id="PasswordValidation" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+
+                @* Email *@
+                <div class="row mb-3">
+                    <label for="Email" class="col-lg-4 col-form-label">Email</label>
+                    <div class="col-lg-8">
+                        <input type="email" class="form-control" id="Email" name="email" placeholder="someone@mail.com" required>
+                    </div>
+                </div>
+
+                @* Address *@
+                <div class="row mb-3" id="AddressGroup">
+                    <label for="Address" class="col-lg-4 col-form-label">Address</label>
+                    <div class="col-lg-8">
+                        <textarea class="form-control" id="Address" name="address" placeholder="12, Jalan ABC, Taman Lokasi" required></textarea>
+                 
+
+                        <div class="row mt-3">
+                            <div class="col">
+                                @* State *@
+                                <select class="form-select mb-3" name="state" aria-label="Select State" required>
+                                    <option value="Johor">Johor</option>
+                                    <option value="Kedah">Kedah</option>
+                                    <option value="Kelantan">Kelantan</option>
+                                    <option value="Malacca">Malacca</option>
+                                    <option value="Negeri Sembilan">Negeri Sembilan</option>
+                                    <option value="Pahang">Pahang</option>
+                                    <option value="Penang">Penang</option>
+                                    <option value="Perlis">Perlis</option>
+                                    <option value="Sabah">Sabah</option>
+                                    <option value="Sarawak">Sarawak</option>
+                                    <option value="Selangor" selected>Selangor</option>
+                                    <option value="Terengganu">Terengganu</option>
+                                    <option value="Kuala Lumpur">Kuala Lumpur</option>
+                                    <option value="Labuan">Labuan</option>
+                                    <option value="Putrajaya">Putrajaya</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-4">
+                                @* Postcode *@
+                                <input type="text" class="form-control" id="Postcode" name="address" placeholder="Postcode" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+
+                @* Select User Role *@
+                <div class="row mb-3">
+                    <label for="UserType" class="col-lg-4 col-form-label">User Type</label>
+                    <div class="col-lg-8">
+                        <select class="form-select mb-3" id="userType" name="userType" aria-label="Select User Type" onchange="UpdateUi()">
+                            <option value="Customer" selected>Customer</option>
+                            <option value="Merchant">Merchant</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                @* Login Button *@
+                <div class="row mb-3 mt-5 justify-content-center">
+                    <button class="btn btn-primary col-lg-6" type="submit">Submit</button>
+                </div>
+
+                @* Clear Form Button *@
+                <div class="row mb-3 justify-content-center">
+                    <button class="btn btn-danger col-lg-6" type="reset">Clear</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
