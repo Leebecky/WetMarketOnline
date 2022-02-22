@@ -114,10 +114,16 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MstMerchantController.cs" />
+    <Compile Include="Controllers\MstCustomerController.cs" />
+    <Compile Include="Controllers\MstAdminController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HelperClass\DatabaseManager.cs" />
+    <Compile Include="HelperClass\GeneralBLL.cs" />
     <Compile Include="Models\MstHomeSlider.cs" />
     <Compile Include="Models\MstProduct.cs" />
     <Compile Include="Models\MstProductReviewImages.cs" />
@@ -149,7 +155,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
-    <Content Include="favicon.ico" />
+    <Content Include="Content\ewm-stylesheet.css" />
+    <Content Include="Content\Icons\ewm_logo.png" />
+    <Content Include="defaultfavicon.ico" />
+    <Content Include="ewm.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -193,7 +202,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -207,6 +218,11 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\MstAdmin\MstAdmin.cshtml" />
+    <Content Include="Views\MstCustomer\MstCustomer.cshtml" />
+    <Content Include="Views\MstMerchant\MstMerchant.cshtml" />
+    <Content Include="Views\Account\SignUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
