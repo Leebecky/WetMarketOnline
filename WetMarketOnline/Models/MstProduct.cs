@@ -1,5 +1,6 @@
 ﻿using EWM.HelperClass;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace EWM.Models
@@ -8,6 +9,7 @@ namespace EWM.Models
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string ObjectName = typeof(MstProduct).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstProduct>).AssemblyQualifiedName;
 
         public string ProductId { get; set; }
         public string ProductName { get; set; }
@@ -46,9 +48,13 @@ namespace EWM.Models
             merchant.ProductId = productId;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
-            merchant = (MstProduct)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstProduct> productList = (List<MstProduct>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
-            return merchant;
+            if (productList.Count == 1)
+            {
+                return productList[0];
+            }
+            return null;
         }
 
         #region Methods
@@ -89,10 +95,10 @@ namespace EWM.Models
         }
 
         //? Insert new record
-        public MstProduct SelectMstProduct(string filterType = "Column")
+        public List<MstProduct> SelectMstProduct(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
-            MstProduct data = (MstProduct)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstProduct> data = (List<MstProduct>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             return data;
         }

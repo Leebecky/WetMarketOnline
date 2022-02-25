@@ -1,4 +1,7 @@
-﻿using System;
+﻿using EWM.HelperClass;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace EWM.Models
 {
@@ -6,6 +9,8 @@ namespace EWM.Models
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string ObjectName = typeof(MstHomeSlider).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstHomeSlider>).AssemblyQualifiedName;
+        public static string FileDirectory = System.Configuration.ConfigurationManager.AppSettings["UploadDirectoryForPhoto"];
 
         public string SliderPhotoId { get; set; }
         public string FileLocation { get; set; }
@@ -33,8 +38,83 @@ namespace EWM.Models
         // Default Constructor
         public MstHomeSlider() { }
 
-    
+        // Constructor - Retrieve from Db based on PK
+        public static MstHomeSlider GetMstHomeSlider(string imgId)
+        {
+            MstHomeSlider img = new MstHomeSlider();
+            img.SliderPhotoId = imgId;
 
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, img, filterType: "All");
+            List<MstHomeSlider> imgList = (List<MstHomeSlider>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
+            if (imgList.Count == 1)
+            {
+                return imgList[0];
+            }
+            return null;
+        }
+
+        #region Methods
+
+        //? Insert new record
+        public int CreateMstHomeSlider(string userName = "")
+        {
+            this.SliderPhotoId = Guid.NewGuid().ToString();
+            this.Status = "Active";
+            this.CreatedDate = DateTime.Now;
+            this.UpdatedDate = DateTime.Now;
+            this.CreatedBy = userName;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Insert");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Update existing record
+        public int UpdateMstHomeSlider(string userName = "")
+        {
+            this.UpdatedDate = DateTime.Now;
+            this.UpdatedBy = userName;
+
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Update");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Delete existing record
+        public int DeleteMstHomeSlider()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
+
+            return rowsAffected;
+        }
+
+        //? Insert new record
+        public List<MstHomeSlider> SelectMstHomeSlider(string filterType = "Column")
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
+            List<MstHomeSlider> data = (List<MstHomeSlider>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+
+            if (data == null)
+            {
+                data = new List<MstHomeSlider>();
+            }
+            return data;
+        }
+
+        //? Runs a Select statement and returns the number of rows found
+        public int CheckMstHomeSlider()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType: "All");
+            int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+
+            return data;
+        }
+        #endregion
+        //end class
     }
 }

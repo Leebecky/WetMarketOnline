@@ -156,7 +156,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\ewm-stylesheet.css" />
-    <Content Include="Content\Icons\ewm_logo.png" />
+    <Content Include="Content\Img\ewm_logo.png" />
     <Content Include="defaultfavicon.ico" />
     <Content Include="ewm.ico" />
     <Content Include="Global.asax" />
@@ -223,6 +223,7 @@
     <Content Include="Views\MstCustomer\MstCustomer.cshtml" />
     <Content Include="Views\MstMerchant\MstMerchant.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

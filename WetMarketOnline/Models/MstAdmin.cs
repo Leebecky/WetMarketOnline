@@ -1,5 +1,7 @@
 ﻿using EWM.HelperClass;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace EWM.Models
@@ -9,6 +11,7 @@ namespace EWM.Models
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static string ObjectName = typeof(MstAdmin).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstAdmin>).AssemblyQualifiedName;
 
         public string AdminId { get; set; }
         public string Username { get; set; }
@@ -42,9 +45,13 @@ namespace EWM.Models
             admin.AdminId = adminId;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, admin, filterType: "All");
-            admin = (MstAdmin)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstAdmin> adminList = (List<MstAdmin>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
-            return admin;
+            if (adminList.Count == 1)
+            {
+                return adminList[0];
+            }
+            return null;
         }
 
         #region Methods
@@ -86,12 +93,12 @@ namespace EWM.Models
             return rowsAffected;
         }
 
-        //? Insert new record
-        public MstAdmin SelectMstAdmin(string filterType = "Column")
+        //? Find Data from table
+        public List<MstAdmin> SelectMstAdmin(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
-            MstAdmin data = (MstAdmin)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
-
+            List<MstAdmin> data = (List<MstAdmin>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);            
+           
             return data;
         }
 

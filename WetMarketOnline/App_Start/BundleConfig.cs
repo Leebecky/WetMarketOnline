@@ -21,7 +21,8 @@ namespace EWM
 
             //bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.min.js"));
+                      "~/Scripts/bootstrap.min.js",
+                "~/Scripts/bootstrap.bundle.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",

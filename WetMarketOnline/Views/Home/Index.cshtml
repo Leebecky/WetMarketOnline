@@ -1,39 +1,94 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using EWM.Models
+
+@{
+    ViewBag.Title = "EWM - Home";
+
+    List<MstHomeSlider> sliderImages = (List<MstHomeSlider>)ViewData["HomeImgSlider"];
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+
+
+
+<!-- Carousel -->
+<div id="homeImgSlider" class="carousel slide" data-bs-ride="carousel">
+
+    <!-- Indicators/dots -->
+    <div class="carousel-indicators">
+
+        @{
+            for (int i = 0; i < sliderImages.Count; i++)
+            {
+                string active = (i == 0) ? "active" : "";
+                <button type="button" data-bs-target="#homeImgSlider" data-bs-slide-to="@i" class="@active"></button>
+            }
+
+        }
+
+    </div>
+
+    <!-- The slideshow/carousel -->
+    <div class="carousel-inner">
+        @{
+            for (int i = 0; i < sliderImages.Count; i++)
+            {
+                string active = (i == 0) ? "active" : "";
+                string directory = MstHomeSlider.FileDirectory;
+                string completeFilePath = Url.Content(string.Concat("~", directory, sliderImages[i].FileLocation));
+                <div class="carousel-item @active">
+                    <img src="@completeFilePath" alt="@sliderImages[i].ImageDesc" class="d-block" style="width:100%;">
+                </div>
+            }
+
+            if (sliderImages.Count == 0)
+            {
+                <div class="carousel-item active">
+                    <img src='@Url.Content("~/Content/Img/ewm_logo.png")' alt="Placeholder Image" class="d-block" style="width:100%">
+                </div>
+            }
+        }
+
+    </div>
+    @{
+        if (sliderImages.Count > 1)
+        {
+            <!-- Left and right controls/icons -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#homeImgSlider" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#homeImgSlider" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>}
+    }
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>   <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>   <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+<div class="container-fluid mt-4 text-center mb-5">
+    <h3>Category</h3>
+
+    <div class="row">
+        @* Vegetables *@
+        <div class="card col mx-3" style="width: 18rem;">
+            <div class="card-body">
+                <h4 class="card-title">Vegetables</h4>
+                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Vegetables.jpg" alt="Photo of various vegetables" /></a>
+            </div>
+        </div>
+
+        @* Meat *@
+        <div class="card col mx-3" style="width: 18rem;">
+            <div class="card-body">
+                <h4 class="card-title">Raw Meat</h4>
+                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Raw Meat.jpg" alt="Photo of Meat" /></a>
+            </div>
+        </div>
+
+        @* Fruits *@
+        <div class="card col mx-3" style="width: 18rem;">
+            <div class="card-body">
+                <h4 class="card-title">Fruits</h4>
+                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Fruits.jpg" alt="Photo of various Fruits" /></a>
+            </div>
+        </div>
     </div>
 </div>
+
+

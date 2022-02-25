@@ -11,6 +11,7 @@ namespace EWM.Models
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string ObjectName = typeof(MstMerchant).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstMerchant>).AssemblyQualifiedName;
 
         public string MerchantId { get; set; }
         public string Username { get; set; }
@@ -51,9 +52,13 @@ namespace EWM.Models
             merchant.MerchantId = merchantId;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
-            merchant = (MstMerchant)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstMerchant> merchantList = (List<MstMerchant>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
-            return merchant;
+            if (merchantList.Count == 1)
+            {
+                return merchantList[0];
+            }
+            return null;
         }
 
         #region Methods
@@ -96,10 +101,10 @@ namespace EWM.Models
         }
 
         //? Insert new record
-        public MstMerchant SelectMstMerchant(string filterType = "Column")
+        public List<MstMerchant> SelectMstMerchant(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
-            MstMerchant data = (MstMerchant)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstMerchant> data = (List<MstMerchant>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             return data;
         }
