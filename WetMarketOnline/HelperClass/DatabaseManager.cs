@@ -256,11 +256,11 @@ namespace EWM.HelperClass
         }
 
         //? Executes the given SQL Command and returns the object
-        public static Object ExecuteQueryCommand_Object(SqlCommand sqlCmd, string objectName)
+        public static Object ExecuteQueryCommand_Object(SqlCommand sqlCmd, string objectName, string listName)
         {
-            var objectType = Type.GetType(objectName);
-            dynamic dbObject = Activator.CreateInstance(objectType);
-
+            var objectType = Type.GetType(objectName);            
+            dynamic dbList = Activator.CreateInstance(Type.GetType(listName));
+            
             SqlConnection conn = new SqlConnection(DbConnectionString);
             SqlDataReader dr = null;
             try
@@ -272,6 +272,7 @@ namespace EWM.HelperClass
 
                 while (dr.Read())
                 {
+                    dynamic dbObject = Activator.CreateInstance(objectType);
                     foreach (PropertyInfo property in dbObject.GetType().GetProperties())
                     {
                         string colName = ToSnakeCase(property.Name);
@@ -331,6 +332,8 @@ namespace EWM.HelperClass
                         PropertyInfo oriData = (from p in propPrivateInfo where p.Name == string.Concat("Ori", property.Name) select p).FirstOrDefault();
                         oriData.SetValue(dbObject, propValue);
                     }
+
+                    dbList.Add(dbObject);
                 }
 
             }
@@ -347,7 +350,7 @@ namespace EWM.HelperClass
                     dr.Close();
                 }
             }
-            return dbObject;
+            return dbList;
         }
 
         //? Executes the given SQL Command and returns the rows affected 

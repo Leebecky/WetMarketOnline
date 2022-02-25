@@ -12,6 +12,7 @@ namespace EWM.Models
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string ObjectName = typeof(MstCustomer).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstCustomer>).AssemblyQualifiedName;
 
         public string CustomerId { get; set; }
         public string Username { get; set; }
@@ -48,13 +49,17 @@ namespace EWM.Models
         // Constructor - Retrieve from Db based on PK
         public static MstCustomer GetMstCustomer(string customerId)
         {
-            MstCustomer merchant = new MstCustomer();
-            merchant.CustomerId = customerId;
+            MstCustomer customer = new MstCustomer();
+            customer.CustomerId = customerId;
 
-            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, merchant, filterType: "All");
-            merchant = (MstCustomer)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, customer, filterType: "All");
+            List<MstCustomer> customerList = (List<MstCustomer>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
-            return merchant;
+            if (customerList.Count == 1)
+            {
+                return customerList[0];
+            }
+            return null;
         }
 
         #region Methods
@@ -97,10 +102,10 @@ namespace EWM.Models
         }
 
         //? Insert new record
-        public MstCustomer SelectMstCustomer(string filterType = "Column")
+        public List<MstCustomer> SelectMstCustomer(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
-            MstCustomer data = (MstCustomer)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName);
+            List<MstCustomer> data = (List<MstCustomer>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             return data;
         }

@@ -22,3 +22,12 @@ select,
 textarea {
     max-width: 280px;
 }*/
+
+.carousel .carousel-item {
+    max-height: 500px;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    max-height: 500px;
+}

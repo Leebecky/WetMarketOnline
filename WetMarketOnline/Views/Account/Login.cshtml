@@ -2,9 +2,12 @@
     ViewBag.Title = "Login";
 }
 
+@{ Html.RenderPartial("ForgotPassword"); }
+
 <h1>Welcome Back</h1>
-<div class="container pt-2 text-center" >
+<div class="container pt-1 text-center" >
     <p class="text-danger">@ViewBag.Error</p>
+    <p class="text-primary">@ViewBag.Message</p>
 </div>
 
 <div class="container ">
@@ -25,10 +28,13 @@
                     <label for="Password" class="col-lg-4 col-form-label">Password</label>
                     <div class="col-lg-8">
                         <input type="password" class="form-control" id="Password" name="password" placeholder="Password" required>
-                        <div id="passwordHelp" class="form-text text-end"><a href="#">Forgot Password?</a></div>
+                        <div id="passwordHelp" class="form-text text-end">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#resetPasswordPopup">Forgot Password?</button>
+                        </div>
                     </div>
                 </div>
-
+             
                 @* Select User Role *@
                 <div class="row mb-3">
                     <label for="UserType" class="col-lg-4 col-form-label">User Type</label>

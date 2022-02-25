@@ -15,11 +15,17 @@ namespace EWM.Controllers
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public ActionResult Index()
         {
+            MstHomeSlider slider = new MstHomeSlider();
+            slider.Status = "Active";
+            string directory = MstHomeSlider.FileDirectory;
+            List<MstHomeSlider> sliderImages = slider.SelectMstHomeSlider("All");
+            ViewData["HomeImgSlider"] = sliderImages;
             return View();
         }
 
         public ActionResult About()
         {
+          
             ViewBag.Message = "About Page";
             return View();
         }
