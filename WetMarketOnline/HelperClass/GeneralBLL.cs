@@ -19,5 +19,11 @@ namespace EWM.HelperClass
             if (sessionUserType.ToString() == "" || sessionUserType.ToString() != validUserType) { return false;  }
             return true;
         }
+
+        public enum Status
+        {
+            Active,
+            Inactive
+        }
     }
 }

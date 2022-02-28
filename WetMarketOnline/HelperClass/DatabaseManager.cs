@@ -109,71 +109,74 @@ namespace EWM.HelperClass
 
             string tblName = ToSnakeCase(objectType.Name);
 
-            // Loop through object properties
-            foreach (PropertyInfo property in dbObject.GetType().GetProperties())
+            if (obj != null)
             {
-                var dataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                bool checkNotNull = false;
+                // Loop through object properties
+                foreach (PropertyInfo property in dbObject.GetType().GetProperties())
+                {
+                    var dataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                    bool checkNotNull = false;
 
-                if (dataType == typeof(String))
-                {
-                    checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject) != "");
-                }
-                else if (dataType == typeof(DateTime))
-                {
-                    checkNotNull = (property.GetValue(dbObject) != default(DateTime));
-                }
-                else
-                {
-                    checkNotNull = (property.GetValue(dbObject) != null);
-                }
-
-                if (checkNotNull)
-                {
-                    string colName = ToSnakeCase(property.Name);
-                    if (queryType.ToLower() == "insert")
+                    if (dataType == typeof(String))
                     {
-                        sqlQueryValues = string.Concat(sqlQueryValues, "@", colName, ",");
+                        checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject) != "");
                     }
-                    else if (queryType.ToLower() == "update")
+                    else if (dataType == typeof(DateTime))
                     {
-                        sqlQueryValues = string.Concat(sqlQueryValues, colName, " = @", colName, ",");
+                        checkNotNull = (property.GetValue(dbObject) != default(DateTime));
                     }
                     else
                     {
-                        sqlQueryValues = string.Concat(sqlQueryValues, colName, " = @", colName, " and ");
+                        checkNotNull = (property.GetValue(dbObject) != null);
                     }
 
-                    cmd.Parameters.AddWithValue(string.Concat("@", colName), property.GetValue(dbObject));
-
-                    if (queryType.ToLower() != "update")
+                    if (checkNotNull)
                     {
-                        sqlQueryColumns = string.Concat(sqlQueryColumns, colName, ",");
-                    }
-                    else
-                    {
-                        PropertyInfo[] propPrivateInfo = dbObject.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance);
-                        PropertyInfo oriData = (from p in propPrivateInfo where p.Name == string.Concat("Ori", property.Name) select p).FirstOrDefault();
-
-                        bool isOriNotNull = false;
-                        if (dataType == typeof(String))
+                        string colName = ToSnakeCase(property.Name);
+                        if (queryType.ToLower() == "insert")
                         {
-                            isOriNotNull = (oriData.GetValue(dbObject) != null && oriData.GetValue(dbObject) != "");
+                            sqlQueryValues = string.Concat(sqlQueryValues, "@", colName, ",");
                         }
-                        else if (dataType == typeof(DateTime))
+                        else if (queryType.ToLower() == "update")
                         {
-                            isOriNotNull = (oriData.GetValue(dbObject) != default(DateTime));
+                            sqlQueryValues = string.Concat(sqlQueryValues, colName, " = @", colName, ",");
                         }
                         else
                         {
-                            isOriNotNull = (oriData.GetValue(dbObject) != null);
+                            sqlQueryValues = string.Concat(sqlQueryValues, colName, " = @", colName, " and ");
                         }
 
-                        if (!isOriNotNull) { continue; }
+                        cmd.Parameters.AddWithValue(string.Concat("@", colName), property.GetValue(dbObject));
 
-                        sqlQueryColumns = string.Concat(sqlQueryColumns, colName, " = @ori_", colName, " and ");
+                        if (queryType.ToLower() != "update")
+                        {
+                            sqlQueryColumns = string.Concat(sqlQueryColumns, colName, ",");
+                        }
+                        else
+                        {
+                            PropertyInfo[] propPrivateInfo = dbObject.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance);
+                            PropertyInfo oriData = (from p in propPrivateInfo where p.Name == string.Concat("Ori", property.Name) select p).FirstOrDefault();
 
-                        cmd.Parameters.AddWithValue(string.Concat("@ori_", colName), oriData.GetValue(dbObject));
+                            bool isOriNotNull = false;
+                            if (dataType == typeof(String))
+                            {
+                                isOriNotNull = (oriData.GetValue(dbObject) != null && oriData.GetValue(dbObject) != "");
+                            }
+                            else if (dataType == typeof(DateTime))
+                            {
+                                isOriNotNull = (oriData.GetValue(dbObject) != default(DateTime));
+                            }
+                            else
+                            {
+                                isOriNotNull = (oriData.GetValue(dbObject) != null);
+                            }
+
+                            if (!isOriNotNull) { continue; }
+
+                            sqlQueryColumns = string.Concat(sqlQueryColumns, colName, " = @ori_", colName, " and ");
+
+                            cmd.Parameters.AddWithValue(string.Concat("@ori_", colName), oriData.GetValue(dbObject));
+                        }
                     }
                 }
             }
@@ -219,7 +222,7 @@ namespace EWM.HelperClass
                     }
                     break;
                 default: // -- Select without filter
-                    sqlQuery = string.Concat("Select ", sqlQueryValues, " from ", tblName);
+                    sqlQuery = string.Concat("Select * from ", tblName);
                     break;
             }
             cmd.CommandText = sqlQuery;

@@ -116,9 +116,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MstHomeSliderController.cs" />
     <Compile Include="Controllers\MstMerchantController.cs" />
     <Compile Include="Controllers\MstCustomerController.cs" />
     <Compile Include="Controllers\MstAdminController.cs" />
+    <Compile Include="Controllers\MstPromotionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -156,7 +158,12 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\ewm-stylesheet.css" />
+    <Content Include="Content\Img\Admin_ManageHome.png" />
+    <Content Include="Content\Img\Admin_ManagePromotion.jpg" />
     <Content Include="Content\Img\ewm_logo.png" />
+    <Content Include="Content\Img\Fruits.jpg" />
+    <Content Include="Content\Img\Raw Meat.jpg" />
+    <Content Include="Content\Img\Vegetables.jpg" />
     <Content Include="defaultfavicon.ico" />
     <Content Include="ewm.ico" />
     <Content Include="Global.asax" />
@@ -224,6 +231,9 @@
     <Content Include="Views\MstMerchant\MstMerchant.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\MstPromotion\ManagePromotion.cshtml" />
+    <Content Include="Views\MstHomeSlider\ManageHomeSlider.cshtml" />
+    <Content Include="Views\MstHomeSlider\HomeSlider_ImageDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
