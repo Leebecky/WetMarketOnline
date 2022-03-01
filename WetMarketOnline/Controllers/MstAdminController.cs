@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EWM.Models;
 
 namespace EWM.Controllers
 {
@@ -11,7 +12,7 @@ namespace EWM.Controllers
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        // GET: MstAdmin
+        //? MstAdmin Home Page
         public ActionResult MstAdmin()
         {
             if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Admin")) { return RedirectToAction("Login", "Account"); }
@@ -19,5 +20,8 @@ namespace EWM.Controllers
             ViewBag.Message = "Placeholder Admin Page";
             return View();
         }
+
+  
+
     }
 }

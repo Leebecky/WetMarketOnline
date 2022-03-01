@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @*<script src="~/Scripts/jquery-3.6.0.min.js"></script>*@
+    <title>EWM - @ViewBag.Title </title>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
     @*@Scripts.Render("~/bundles/modernizr")
         @Styles.Render("~/Content/css")*@
     <link rel="shortcut icon" type="image/ico" href="@Url.Content("~/ewm.ico")">
@@ -56,8 +56,8 @@
                             //        accName = admin.Username;
                             //        break;
                             //}
-                        
-                            <li class="nav-item dropdown">
+
+                            <li class="nav-item dropdown dropstart">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle"></i>
                                 </a>
@@ -66,9 +66,12 @@
                                     <li class="dropdown-item"><a class="nav-link" href="@Url.Action("Logout", "Account")">Logout</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Home")"><i class="bi bi-cart4"></i></a>
-                            </li>
+                            if (accountType == "Customer")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Login", "Home")"><i class="bi bi-cart4"></i></a>
+                                </li>
+                            }
                         }
                         else
                         {

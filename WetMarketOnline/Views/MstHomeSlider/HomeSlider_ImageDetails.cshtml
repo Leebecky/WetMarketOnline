@@ -1,0 +1,185 @@
+﻿@using EWM.Models;
+@using EWM.HelperClass
+@model EWM.Models.MstHomeSlider
+
+@{
+    ViewBag.Title = "EWM - Home Slider";
+
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+    string directory = MstHomeSlider.FileDirectory;
+    string imgPath = Url.Content(string.Concat("~", directory, Model.FileLocation));
+    string altText = string.IsNullOrEmpty(Model.ImageDesc) ? "<< No Image >>" : Model.ImageDesc;
+}
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#btnFile").click(e => {
+            $("#FormFileUpload").click();
+        });
+
+        $("#FormFileUpload").change(
+            function () {
+                if ($(this).val() != "") {
+                    $("#btnFile").addClass("btn-success");
+                    $("#btnFile").removeClass("btn-primary");
+                    $("#btnFile").text("File Uploaded");
+                } else {
+                    $("#btnFile").addClass("btn-primary");
+                    $("#btnFile").removeClass("btn-success");
+                    $("#btnFile").text("Upload File");
+                }
+            });
+    });
+</script>
+
+<h2>@Model.Filename</h2>
+<div class="row justify-content-center">
+    <div class="text-center mb-4" style="max-width: 500px">      
+        <img src="@imgPath" class="img-fluid rounded  d-block" alt="@altText">
+    </div>
+</div>
+
+<div class="mb-5">
+    <h4>@pageMode</h4>
+    <hr />
+
+    @using (Html.BeginForm("UpdateMstHomeSlider", "MstHomeSlider", new { mode = pageMode }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "HomeSliderForm" }))
+    {
+    <dl class="dl-horizontal">
+        @Html.TextBoxFor(model => model.SliderPhotoId, new { @class = "d-none" })
+        <dt>
+            @Html.DisplayNameFor(model => model.Filename)
+        </dt>
+
+        <dd class="mb-4">
+            @{
+                if (pageMode == "Details")
+                {
+                    @Html.DisplayFor(model => model.Filename)
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Filename, new { @class = "form-control" })
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageDesc)
+        </dt>
+
+        <dd class="mb-4">
+
+            @{
+                if (pageMode == "Details")
+                {
+                    @Html.DisplayFor(model => model.ImageDesc)
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.ImageDesc, new { @class = "form-control" })
+                }
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FileLocation)
+        </dt>
+
+        <dd class="mb-4 text-break">
+            @{
+                if (pageMode == "Details")
+                {
+                    @Html.DisplayFor(model => model.FileLocation)
+                }
+                else
+                {                    
+                    @Html.DisplayFor(model => model.FileLocation)
+                    <div class="row-cols-sm-3 row-cols-lg-6 mt-sm-3">
+                    <button id="btnFile" type="button" class="btn btn-primary end-0">Upload File</button>
+                    <input class="form-control visually-hidden" type="file" id="FormFileUpload" name="FormFileUpload">
+
+                    </div>
+                }
+            }
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExtensionType)
+        </dt>
+
+        <dd class="mb-4">
+            @Html.DisplayFor(model => model.ExtensionType, new { @class = "form-label" })
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd class="mb-4">
+            @{
+                if (pageMode == "Details")
+                {
+                    @Html.DisplayFor(model => model.Status)
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-control" })
+                }
+            }
+        </dd>
+
+        @*@  <dt>
+            Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd class="mb-4">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd class="mb-4">
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedDate)
+        </dt>
+
+        <dd class="mb-4">
+            @Html.DisplayFor(model => model.UpdatedDate)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.UpdatedBy)
+        </dt>*@
+
+        @*<dd class="mb-4">
+            @Html.DisplayFor(model => model.UpdatedBy)
+        </dd>*@
+
+    </dl>
+    }
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+
+    <a href='@Url.Action("ManageHomeSlider")' class="btn btn-secondary me-3 px-4">Back</a>
+
+    @{
+        if (pageMode != "Details")
+        {
+            <button class="btn btn-success px-4" type="submit" form="HomeSliderForm">Submit</button>
+        }
+    }
+
+</div>
+
+@*<p>
+        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@

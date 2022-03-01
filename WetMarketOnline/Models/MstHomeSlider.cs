@@ -1,6 +1,7 @@
 ﻿using EWM.HelperClass;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 
 namespace EWM.Models
@@ -13,13 +14,18 @@ namespace EWM.Models
         public static string FileDirectory = System.Configuration.ConfigurationManager.AppSettings["UploadDirectoryForPhoto"];
 
         public string SliderPhotoId { get; set; }
+        [Display(Name = "File Location")]
         public string FileLocation { get; set; }
+        [Display(Name = "Description")]
         public string ImageDesc { get; set; }
+        [Display(Name = "File Name")]
         public string Filename { get; set; }
+        [Display(Name = "File Extension")]
         public string ExtensionType { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
+        [Display(Name = "Last Changed")]
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
@@ -53,6 +59,20 @@ namespace EWM.Models
             }
             return null;
         }
+
+        #region Getter/Setter
+
+        public string GetOriFileName()
+        {
+            return OriFilename;
+        }
+
+        public string GetOriFileLocation()
+        {
+            return OriFileLocation;
+        }
+
+        #endregion
 
         #region Methods
 
@@ -93,7 +113,7 @@ namespace EWM.Models
             return rowsAffected;
         }
 
-        //? Insert new record
+        //? Select from database based on value
         public List<MstHomeSlider> SelectMstHomeSlider(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
@@ -114,6 +134,21 @@ namespace EWM.Models
 
             return data;
         }
+
+        //? Select all records from database
+        public static List<MstHomeSlider> SelectMstHomeSlider_All()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, null, "SelectAll");
+            List<MstHomeSlider> data = (List<MstHomeSlider>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+
+            if (data == null)
+            {
+                data = new List<MstHomeSlider>();
+            }
+            return data;
+        }
+
+        
         #endregion
         //end class
     }
