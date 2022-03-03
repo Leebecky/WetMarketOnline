@@ -42,9 +42,11 @@ namespace EWM.Controllers
         //? Update/Add new MstHomeSlider record
         public ActionResult UpdateMstHomeSlider(MstHomeSlider formData, HttpPostedFileBase FormFileUpload, string mode)
         {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Admin")) { return RedirectToAction("Login", "Account"); }
             MstAdmin member = (MstAdmin)Session["Account"];
             string fileExtension = "";
             string filePath = "";
+            int rowsAffected = -1;
 
             //Get absolute Upload path 
             string UploadPath = Server.MapPath(MstHomeSlider.FileDirectory);
@@ -88,13 +90,24 @@ namespace EWM.Controllers
 
                     oriSlider.FileLocation = newFilePath;
                 }
-                oriSlider.UpdateMstHomeSlider(member.Username);
+                rowsAffected = oriSlider.UpdateMstHomeSlider(member.Username);
             }
             else if (mode == "New")
             {
-                formData.CreateMstHomeSlider(member.Username);
+                rowsAffected = formData.CreateMstHomeSlider(member.Username);
             }
-            return RedirectToAction("ManageHomeSlider");
+
+
+            if (rowsAffected == 1)
+            {
+                return RedirectToAction("ManageHomeSlider");
+            }
+            else
+            {
+                ViewBag.Error = "Error processing request. Please try again";
+                return View("HomeSlider_ImageDetails", formData);
+            }
+
         }
 
         // GET: MstHomeSlider/Delete/5

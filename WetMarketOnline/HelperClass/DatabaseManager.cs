@@ -115,19 +115,23 @@ namespace EWM.HelperClass
                 foreach (PropertyInfo property in dbObject.GetType().GetProperties())
                 {
                     var dataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                    bool isNullable = (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
                     bool checkNotNull = false;
 
-                    if (dataType == typeof(String))
+                    if (!isNullable)
                     {
-                        checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject) != "");
-                    }
-                    else if (dataType == typeof(DateTime))
-                    {
-                        checkNotNull = (property.GetValue(dbObject) != default(DateTime));
-                    }
-                    else
-                    {
-                        checkNotNull = (property.GetValue(dbObject) != null);
+                        if (dataType == typeof(String))
+                        {
+                            checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject) != "");
+                        }
+                        else if (dataType == typeof(DateTime))
+                        {
+                            checkNotNull = (property.GetValue(dbObject) != default(DateTime));
+                        }
+                        else
+                        {
+                            checkNotNull = (property.GetValue(dbObject) != null);
+                        }
                     }
 
                     if (checkNotNull)
@@ -261,9 +265,9 @@ namespace EWM.HelperClass
         //? Executes the given SQL Command and returns the object
         public static Object ExecuteQueryCommand_Object(SqlCommand sqlCmd, string objectName, string listName)
         {
-            var objectType = Type.GetType(objectName);            
+            var objectType = Type.GetType(objectName);
             dynamic dbList = Activator.CreateInstance(Type.GetType(listName));
-            
+
             SqlConnection conn = new SqlConnection(DbConnectionString);
             SqlDataReader dr = null;
             try
@@ -283,6 +287,8 @@ namespace EWM.HelperClass
                         dynamic propValue = null;
 
                         var exists = Enumerable.Range(0, dr.FieldCount).Any(i => string.Equals(dr.GetName(i), colName, StringComparison.OrdinalIgnoreCase));
+                        bool isNullable = (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
+
 
                         if (dataType == typeof(String))
                         {
@@ -303,7 +309,7 @@ namespace EWM.HelperClass
                             }
                             else
                             {
-                                propValue = default(DateTime);
+                                propValue = (isNullable) ? (DateTime?)null : default(DateTime);
                             }
                         }
                         else if (dataType == typeof(Decimal) || dataType == typeof(int))
@@ -314,7 +320,7 @@ namespace EWM.HelperClass
                             }
                             else
                             {
-                                propValue = default(int);
+                                propValue = isNullable ? (int?)null : default(int);
                             }
                         }
                         else if (dataType == typeof(bool))
@@ -325,7 +331,7 @@ namespace EWM.HelperClass
                             }
                             else
                             {
-                                propValue = default(bool);
+                                propValue =  default(bool);
                             }
                         }
 

@@ -5,29 +5,14 @@
 }
 
 <script type="text/javascript">
-    //function ConfirmDelete() {
-    //    alert("Are you sure?");
-    //return false;
-    //}
 
-    $(document).ready(() => {
-        
-        //? Confirm Delete Action
-        $(".DeleteBtn").click(c => {
-            alert("Are you sure?");
-            console.log(c.target.id);
-            return false;
-        });
-    });
+
 </script>
 
 <h2>Manage Home Slider</h2>
 
 <p class="text-danger">@ViewBag.Error</p>
 
-<p>
-    @Html.ActionLink("Add New", "Details", new { mode = "New" })
-</p>
 <table class="table mb-5">
     <tr>
         <th>
@@ -45,7 +30,7 @@
         <th>
             @Html.DisplayNameFor(model => model.UpdatedDate)
         </th>
-        <th colspan="3"></th>
+        <th colspan="3" class="text-center">@Html.ActionLink("Add New", "Details", new { mode = "New" })</th>
     </tr>
 
     @foreach (var item in Model)
@@ -70,7 +55,7 @@
             <td>
                 @Html.ActionLink("Edit", "Details", new { id = item.SliderPhotoId, mode = "Edit" }) |
                 @Html.ActionLink("Details", "Details", new { id = item.SliderPhotoId, mode = "Details" }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.SliderPhotoId }, new { onclick = "return confirm('Are you sure you wish to delete "+item.Filename+"?');" })
+                @Html.ActionLink("Delete", "Delete", new { id = item.SliderPhotoId }, new { onclick = "return confirm('Are you sure you wish to delete " + item.Filename + "?');" })
 
             </td>
         </tr>

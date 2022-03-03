@@ -1,7 +1,72 @@
-﻿
+﻿@model IEnumerable<EWM.Models.MstPromotion>
+
 @{
-    ViewBag.Title = "ManagePromotion";
+    ViewBag.Title = "Manage Promotion";
 }
 
-<h2>ManagePromotion</h2>
+<script type="text/javascript">
 
+</script>
+
+
+<h2>Manage Promotion</h2>
+
+<p class="text-danger">@ViewBag.Error</p>
+
+<table class="table mb-5">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PromotionCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PromotionDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdatedDate)
+        </th>
+        <th colspan="3" class="text-center">    @Html.ActionLink("Add New", "Details", new { mode = "New" })</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PromotionCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PromotionDesc)
+            </td>
+            <td>
+                @{ string startDate = item.StartDate.ToString("dd/MM/yyyy");}
+                @Html.DisplayFor(modelItem => startDate)
+            </td>
+            <td>
+                @{ string endDate = item.EndDate.ToString("dd/MM/yyyy");}
+                @Html.DisplayFor(modelItem => endDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedDate)
+            </td>
+            <td>
+            <td>
+                @Html.ActionLink("Edit", "Details", new { id = item.PromotionId, mode = "Edit" }) |
+                @Html.ActionLink("Details", "Details", new { id = item.PromotionId, mode = "Details" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.PromotionId }, new { onclick = "return confirm('Are you sure you wish to delete promotion: " + item.PromotionCode + "?');" })
+
+            </td>
+        </tr>
+    }
+
+</table>
