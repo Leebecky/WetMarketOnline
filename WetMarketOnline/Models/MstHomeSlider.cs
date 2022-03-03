@@ -27,6 +27,7 @@ namespace EWM.Models
         public string CreatedBy { get; set; }
         [Display(Name = "Last Changed")]
         public DateTime UpdatedDate { get; set; }
+        [Display(Name = "Updated By")]
         public string UpdatedBy { get; set; }
 
 
@@ -44,7 +45,7 @@ namespace EWM.Models
         // Default Constructor
         public MstHomeSlider() { }
 
-        // Constructor - Retrieve from Db based on PK
+        // Retrieve from Db based on PK
         public static MstHomeSlider GetMstHomeSlider(string imgId)
         {
             MstHomeSlider img = new MstHomeSlider();

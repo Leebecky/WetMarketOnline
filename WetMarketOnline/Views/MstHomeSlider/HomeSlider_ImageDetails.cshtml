@@ -34,13 +34,14 @@
 
 <h2>@Model.Filename</h2>
 <div class="row justify-content-center">
-    <div class="text-center mb-4" style="max-width: 500px">      
+    <div class="text-center mb-4" style="max-width: 500px">
         <img src="@imgPath" class="img-fluid rounded  d-block" alt="@altText">
     </div>
 </div>
 
 <div class="mb-5">
     <h4>@pageMode</h4>
+    <p class="text-danger">@ViewBag.Error</p>
     <hr />
 
     @using (Html.BeginForm("UpdateMstHomeSlider", "MstHomeSlider", new { mode = pageMode }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "HomeSliderForm" }))
@@ -93,11 +94,11 @@
                     @Html.DisplayFor(model => model.FileLocation)
                 }
                 else
-                {                    
+                {
                     @Html.DisplayFor(model => model.FileLocation)
                     <div class="row-cols-sm-3 row-cols-lg-6 mt-sm-3">
-                    <button id="btnFile" type="button" class="btn btn-primary end-0">Upload File</button>
-                    <input class="form-control visually-hidden" type="file" id="FormFileUpload" name="FormFileUpload">
+                        <button id="btnFile" type="button" class="btn btn-primary end-0">Upload File</button>
+                        <input class="form-control visually-hidden" type="file" id="FormFileUpload" name="FormFileUpload">
 
                     </div>
                 }
@@ -125,7 +126,7 @@
                 }
                 else
                 {
-                    @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
                 }
             }
         </dd>
@@ -139,20 +140,22 @@
         </dd>*@
 
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-
-        <dd class="mb-4">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.UpdatedDate)
         </dt>
 
         <dd class="mb-4">
             @Html.DisplayFor(model => model.UpdatedDate)
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedBy)
+        </dt>
+
+        <dd class="mb-4">
+            @Html.DisplayFor(model => model.UpdatedBy)
+        </dd>
+
+
 
         @*<dt>
             @Html.DisplayNameFor(model => model.UpdatedBy)

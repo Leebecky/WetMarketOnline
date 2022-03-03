@@ -22,11 +22,13 @@ namespace EWM
             //bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.min.js",
+                      "~/Scripts/bootstrap-datepicker.min.js",
                 "~/Scripts/bootstrap.bundle.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                     "~/Content/bootstrap.min.css",
+                    "~/Content/bootstrap-datepicker.min.css",
                       "~/Content/site.css"));
         }
     }

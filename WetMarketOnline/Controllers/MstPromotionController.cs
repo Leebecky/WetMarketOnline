@@ -1,4 +1,5 @@
 ﻿using EWM.HelperClass;
+using EWM.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,78 +16,78 @@ namespace EWM.Controllers
         {
             if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Admin")) { return RedirectToAction("Login", "Account"); }
 
-            ViewBag.Message = "Placeholder Admin Page";
-            return View();
+            List<MstPromotion> list = MstPromotion.SelectMstPromotion_All();
+            return View(list);
         }
 
         // GET: MstPromotion/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id, string mode)
         {
-            return View();
+
+            ViewData["PageMode"] = mode;
+            if (mode == "New")
+            {
+                return View("MstPromotion_Details", new MstPromotion());
+            }
+            else
+            {
+                MstPromotion slider = MstPromotion.GetMstPromotion(id);
+                return View("MstPromotion_Details", slider);
+            }
         }
 
-        // GET: MstPromotion/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: MstPromotion/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult UpdateMstPromotion(MstPromotion formData, string mode)
         {
-            try
-            {
-                // TODO: Add insert logic here
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Admin")) { return RedirectToAction("Login", "Account"); }
+            MstAdmin member = (MstAdmin)Session["Account"];
 
-                return RedirectToAction("Index");
-            }
-            catch
+            int rowsAffected = -1;
+
+            if (mode == "New")
             {
-                return View();
+                rowsAffected = formData.CreateMstPromotion(member.Username);
             }
+            else if (mode == "Edit")
+            {
+                MstPromotion oriData = MstPromotion.GetMstPromotion(formData.PromotionId);
+                oriData.PromotionCode = formData.PromotionCode;
+                oriData.PromotionDesc = formData.PromotionDesc;
+                oriData.StartDate = formData.StartDate;
+                oriData.EndDate = formData.EndDate;
+                oriData.Status = formData.Status;
+                oriData.Amount = formData.Amount;
+
+                rowsAffected = oriData.UpdateMstPromotion(member.Username);
+            }
+
+            if (rowsAffected == 1)
+            {
+                return RedirectToAction("ManagePromotion");
+            }
+            else
+            {
+                ViewBag.Error = "Error processing request. Please try again";
+                ViewData["PageMode"] = mode;
+                return View("MstPromotion_Details", formData);
+            }
+
         }
 
-        // GET: MstPromotion/Edit/5
-        public ActionResult Edit(int id)
+        /// GET: MstPromotion/Delete/5
+        public ActionResult Delete(string id)
         {
-            return View();
-        }
+            MstPromotion promo = MstPromotion.GetMstPromotion(id);
+            int rowsAffected = promo.DeleteMstPromotion();
 
-        // POST: MstPromotion/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
+
+            if (rowsAffected == 1)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                return RedirectToAction("ManagePromotion");
             }
-            catch
+            else
             {
-                return View();
-            }
-        }
-
-        // GET: MstPromotion/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: MstPromotion/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
+                ViewBag.Error = "Failed to delete the promotion. Please try again.";
                 return View();
             }
         }
