@@ -11,6 +11,7 @@ namespace EWM.HelperClass
     public class GeneralBLL
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static string FileDirectory = System.Configuration.ConfigurationManager.AppSettings["UploadDirectoryForPhoto"];
 
         //? Checks if the user type saved in session matches the expected user type for a given page
         public static bool VerifyAccessRight(object sessionUserType, string validUserType)

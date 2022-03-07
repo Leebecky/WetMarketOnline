@@ -95,7 +95,7 @@
                 }
                 else
                 {
-                    @Html.DisplayFor(model => model.FileLocation)
+                    @Html.TextBoxFor(model => model.FileLocation, new { @readonly = "true", @class="form-control" })
                     <div class="row-cols-sm-3 row-cols-lg-6 mt-sm-3">
                         <button id="btnFile" type="button" class="btn btn-primary end-0">Upload File</button>
                         <input class="form-control visually-hidden" type="file" id="FormFileUpload" name="FormFileUpload">

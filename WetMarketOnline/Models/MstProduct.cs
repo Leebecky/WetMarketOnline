@@ -1,6 +1,7 @@
 ﻿using EWM.HelperClass;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 
 namespace EWM.Models
@@ -12,21 +13,35 @@ namespace EWM.Models
         public static string ListName = typeof(List<MstProduct>).AssemblyQualifiedName;
 
         public string ProductId { get; set; }
+        [Display(Name = "Product Name")]
         public string ProductName { get; set; }
+        [Display(Name = "Product Code")]
+        public string ProductCode { get; set; }
+        [Display(Name = "Description")]
         public string ProductDesc { get; set; }
+        [Display(Name = "Merchant")]
         public string MerchantId { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
-        public decimal Rating { get; set; }
+        public decimal? Price { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? Rating { get; set; }
         public string Status { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        [Display(Name = "Last Updated")]
+        public DateTime? UpdatedDate { get; set; }
+        [Display(Name = "Updated By")]
         public string UpdatedBy { get; set; }
 
+        // Additional Properties
+        private List<MstCategory> CatList { get; set; }
+        private List<MstProductImage> ImageList { get; set; }
+        private List<MstProductReview> ReviewList { get; set; }
+        private List<MstProductReviewImage> ReviewImageList { get; set; }
 
+        // Original Data
         private string OriProductId { get; set; }
         private string OriProductName { get; set; }
+        private string OriProductCode { get; set; }
         private string OriProductDesc { get; set; }
         private string OriMerchantId { get; set; }
         private decimal OriPrice { get; set; }
@@ -57,11 +72,36 @@ namespace EWM.Models
             return null;
         }
 
+        #region Getters & Setters
+
+        public List<MstCategory> GetCatList()
+        {
+            return CatList;
+        }
+
+        public List<MstProductImage> GetImageList()
+        {
+            return ImageList;
+        }
+
+        public List<MstProductReview> GetReviewList()
+        {
+            return ReviewList;
+        }
+
+        public List<MstProductReviewImage> GetReviewImageList()
+        {
+            return ReviewImageList;
+        }
+
+        #endregion
+
         #region Methods
 
         //? Insert new record
         public int CreateMstProduct(string userName = "")
         {
+            this.ProductId = Guid.NewGuid().ToString();
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
             this.CreatedBy = userName;
@@ -102,8 +142,76 @@ namespace EWM.Models
 
             return data;
         }
-        #endregion
 
 
+        //? Select all records from database
+        public static List<MstProduct> SelectMstProduct_All()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, null, "SelectAll");
+            List<MstProduct> data = (List<MstProduct>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+
+            if (data == null)
+            {
+                data = new List<MstProduct>();
+            }
+            return data;
+        }
+
+        //? Assembles a complete set of data for MstProduct
+        public MstProduct GetCompleteProductData(string productId)
+        {
+            MstProduct product = GetMstProduct(productId);
+            product.CatList = GetMstProductCategoryData();
+            product.ImageList = GetImageList();
+            return product;
+        }
+
+        //? Retrieves the Product Category Data
+        public List<MstCategory> GetMstProductCategoryData()
+        {
+            List<MstCategory> catList = new List<MstCategory>();
+            try
+            {
+                MstProductCategory productCat = new MstProductCategory();
+                productCat.ProductId = this.ProductId;
+                productCat.Status = "Active";
+
+                List<MstProductCategory> productCatList = productCat.SelectMstProductCategory("All");
+
+                foreach (var item in productCatList)
+                {
+                    MstCategory cat = MstCategory.GetMstCategory(item.CategoryId);
+                    catList.Add(cat);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("GetMstProductCategoryData: " + ex);
+            }
+            return catList;
+        }
+
+        //? Retrieves the Product Category Data
+        public List<MstProductImage> GetMstProductImageData()
+        {
+            List<MstProductImage> productImgList = new List<MstProductImage>();
+            try
+            {
+                MstProductImage productImg = new MstProductImage
+                {
+                    ProductId = this.ProductId,
+                    Status = "Active"
+                };
+                productImgList = productImg.SelectMstProductImage("All");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("GetMstProductImageData: " + ex);
+            }
+            return productImgList;
+        }
+
+
+        #endregion        
     }
 }

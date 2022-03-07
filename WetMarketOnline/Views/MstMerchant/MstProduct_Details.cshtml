@@ -1,0 +1,209 @@
+﻿@using EWM.Models;
+@using EWM.HelperClass
+@model EWM.Models.MstProduct
+
+@{
+    ViewBag.Title = "Product Details";
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+    int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+    string directory = GeneralBLL.FileDirectory;
+    //string imgPath = Url.Content(string.Concat("~", directory, Model.GetImageList()[0].FileLocation));
+    //string altText = string.IsNullOrEmpty(Model.ImageDesc) ? "<< No Image >>" : Model.ImageDesc;
+}
+
+<h2>@Model.ProductCode</h2>
+<div class="row justify-content-center">
+    <div class="text-center mb-4" style="max-width: 500px">
+        @*<img src="@imgPath" class="img-fluid rounded  d-block" alt="@altText">*@
+    </div>
+</div>
+
+<div class="mb-5">
+    <h4>@pageMode</h4>
+    <p class="text-danger">@ViewBag.Error</p>
+    <hr />
+
+    @using (Html.BeginForm("UpdateMstProduct", "MstMerchant", new { mode = pageMode }, FormMethod.Post, new { @id = "MstProductForm" }))
+    {
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ProductCode)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.ProductCode)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ProductCode, new { @class = "form-control", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.ProductName)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ProductName, new { @class = "form-control", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ProductDesc)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.ProductDesc)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ProductDesc, new { @class = "form-control", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MerchantId)
+            </dt>
+
+            <dd>
+                @{
+                    MstMerchant merchant = (MstMerchant)Session["Account"];
+                    if (pageMode == "New")
+                    {
+                        Model.MerchantId = merchant.MerchantId;
+                    }
+
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayText(merchant.Username)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.MerchantId, new { @class = "form-control", @readonly = "true" })
+                        @Html.TextBox("MerchantUsername", merchant.Username, new { @class = "form-control", @readonly = "true" })
+                    }
+                }
+
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.Price)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", @type = "number", @step = "0.001", @min = "0", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.Quantity)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control", @type = "number", @step = "1", @min = "1", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Rating)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Rating)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+
+            <dd>
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.Status)
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UpdatedDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UpdatedDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UpdatedBy)
+            </dd>
+
+            @{
+                List<MstCategory> catList = Model.GetCatList();
+                for (int i = 1; i <= maxCat; i++)
+                {
+                    MstCategory catData = (catList == null) ? null : catList.Find(l => l.CatLevel == i);
+                    if (catData != null)
+                    {
+                        <dd>
+                            @Html.Display(catData.CategoryCode);
+                        </dd>
+                    }
+                }
+
+            }
+
+        </dl>
+    }
+</div>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+
+    <a href='@Url.Action("ManageProduct")' class="btn btn-secondary me-3 px-4">Back</a>
+
+    @{
+        if (pageMode != "Details")
+        {
+            <button class="btn btn-success px-4" type="submit" form="MstProductForm">Submit</button>
+        }
+    }
+
+</div>

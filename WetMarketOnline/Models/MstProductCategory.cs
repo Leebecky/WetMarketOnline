@@ -1,57 +1,52 @@
 ﻿using EWM.HelperClass;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.SqlClient;
-
 namespace EWM.Models
 {
-    public class MstProductImage
+    public class MstProductCategory
     {
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public static string ObjectName = typeof(MstProductImage).AssemblyQualifiedName;
-        public static string ListName = typeof(List<MstProductImage>).AssemblyQualifiedName;
 
-        public string ProductImageId { get; set; }
+        public static string ObjectName = typeof(MstProductCategory).AssemblyQualifiedName;
+        public static string ListName = typeof(List<MstProductCategory>).AssemblyQualifiedName;
+
+        public string ProductCatId { get; set; }
         public string ProductId { get; set; }
-        public string Filename { get; set; }
-        public int ImageOrder{ get; set; }
-        public string ImageDesc { get; set; }
-        public string FileLocation { get; set; }
-        public string ExtensionType { get; set; }
+        public string CategoryId { get; set; }
         public string Status { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
-        private string OriProductImageId { get; set; }
-        private string OriProductId { get; set; }
-        private string OriFilename { get; set; }
-        private int OriImageOrder { get; set; }
-        private string OriImageDesc { get; set; }
-        private string OriFileLocation { get; set; }
-        private string OriExtensionType { get; set; }
+        public string OriProductCatId { get; set; }
+        public string OriProductId { get; set; }
+        private string OriCategoryId { get; set; }
         private string OriStatus { get; set; }
-        private DateTime OriCreatedDate { get; set; }
+        private DateTime? OriCreatedDate { get; set; }
         private string OriCreatedBy { get; set; }
-        private DateTime OriUpdatedDate { get; set; }
+        private DateTime? OriUpdatedDate { get; set; }
         private string OriUpdatedBy { get; set; }
 
         // Default Constructor
-        public MstProductImage() { }
+        public MstProductCategory() { }
 
         // Constructor - Retrieve from Db based on PK
-        public static MstProductImage GetMstProductImage(string imgId)
+        public static MstProductCategory GetMstProductCategory(string catId)
         {
-            MstProductImage img = new MstProductImage();
-            img.ProductImageId = imgId;
+            MstProductCategory cat = new MstProductCategory();
+            cat.ProductCatId = catId;
 
-            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, img, filterType: "All");
-            List<MstProductImage> imgList = (List<MstProductImage>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, cat, filterType: "All");
+            List<MstProductCategory> catList = (List<MstProductCategory>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
-            if (imgList.Count == 1)
+            if (catList.Count == 1)
             {
-                return imgList[0];
+                return catList[0];
             }
             return null;
         }
@@ -59,9 +54,9 @@ namespace EWM.Models
         #region Methods
 
         //? Insert new record
-        public int CreateMstProductImage(string userName = "")
+        public int CreateMstProductCategory(string userName = "")
         {
-            this.ProductImageId = Guid.NewGuid().ToString();
+            this.CategoryId = Guid.NewGuid().ToString();
             this.Status = "Active";
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
@@ -75,7 +70,7 @@ namespace EWM.Models
         }
 
         //? Update existing record
-        public int UpdateMstProductImage(string userName = "")
+        public int UpdateMstProductCategory(string userName = "")
         {
             this.UpdatedDate = DateTime.Now;
             this.UpdatedBy = userName;
@@ -87,7 +82,7 @@ namespace EWM.Models
         }
 
         //? Delete existing record
-        public int DeleteMstProductImage()
+        public int DeleteMstProductCategory()
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
             int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);
@@ -96,16 +91,16 @@ namespace EWM.Models
         }
 
         //? Find Data from table
-        public List<MstProductImage> SelectMstProductImage(string filterType = "Column")
+        public List<MstProductCategory> SelectMstProductCategory(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
-            List<MstProductImage> data = (List<MstProductImage>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            List<MstProductCategory> data = (List<MstProductCategory>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             return data;
         }
 
         //? Runs a Select statement and returns the number of rows found
-        public int CheckMstProductImage()
+        public int CheckMstProductCategory()
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType: "All");
             int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
@@ -114,21 +109,19 @@ namespace EWM.Models
         }
 
         //? Select all records from database
-        public static List<MstProductImage> SelectMstProductImage_All()
+        public static List<MstProductCategory> SelectMstProductCategory_All()
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, null, "SelectAll");
-            List<MstProductImage> data = (List<MstProductImage>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            List<MstProductCategory> data = (List<MstProductCategory>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             if (data == null)
             {
-                data = new List<MstProductImage>();
+                data = new List<MstProductCategory>();
             }
             return data;
         }
 
 
         #endregion
-
-
     }
 }

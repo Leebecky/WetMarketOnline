@@ -115,24 +115,24 @@ namespace EWM.HelperClass
                 foreach (PropertyInfo property in dbObject.GetType().GetProperties())
                 {
                     var dataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                    bool isNullable = (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
+                    //bool isNullable = (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
                     bool checkNotNull = false;
 
-                    if (!isNullable)
-                    {
+                    //if (!isNullable)
+                    //{
                         if (dataType == typeof(String))
                         {
                             checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject) != "");
                         }
                         else if (dataType == typeof(DateTime))
                         {
-                            checkNotNull = (property.GetValue(dbObject) != default(DateTime));
+                            checkNotNull = (property.GetValue(dbObject) != null && property.GetValue(dbObject)!= default(DateTime));
                         }
                         else
                         {
                             checkNotNull = (property.GetValue(dbObject) != null);
                         }
-                    }
+                    //}
 
                     if (checkNotNull)
                     {
@@ -312,7 +312,7 @@ namespace EWM.HelperClass
                                 propValue = (isNullable) ? (DateTime?)null : default(DateTime);
                             }
                         }
-                        else if (dataType == typeof(Decimal) || dataType == typeof(int))
+                        else if (dataType == typeof(int))
                         {
                             if (exists)
                             {
@@ -321,6 +321,17 @@ namespace EWM.HelperClass
                             else
                             {
                                 propValue = isNullable ? (int?)null : default(int);
+                            }
+                        }
+                          else if (dataType == typeof(Decimal))
+                        {
+                            if (exists)
+                            {
+                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(decimal) : dr[colName];
+                            }
+                            else
+                            {
+                                propValue = isNullable ? (decimal?)null : default(decimal);
                             }
                         }
                         else if (dataType == typeof(bool))

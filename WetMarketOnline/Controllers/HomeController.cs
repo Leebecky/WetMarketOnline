@@ -25,7 +25,6 @@ namespace EWM.Controllers
 
         public ActionResult About()
         {
-            MstCategory cat = MstCategory.GetMstCategory("");
             ViewBag.Message = "About Page";
             return View();
         }
