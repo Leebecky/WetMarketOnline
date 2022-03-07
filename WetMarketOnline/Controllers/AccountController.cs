@@ -48,6 +48,7 @@ namespace EWM.Controllers
                     rowsAffected = customerAcc.CheckMstCustomer();
                     if (rowsAffected == 1)
                     {
+                        customerAcc = customerAcc.SelectMstCustomer("All")[0];
                         Session["Account"] = customerAcc;
                         loginValid = true;
                     }
@@ -64,6 +65,7 @@ namespace EWM.Controllers
                     rowsAffected = merchantAcc.CheckMstMerchant();
                     if (rowsAffected == 1)
                     {
+                        merchantAcc = merchantAcc.SelectMstMerchant("All")[0];
                         Session["Account"] = merchantAcc;
                         loginValid = true;
                     }
@@ -80,6 +82,7 @@ namespace EWM.Controllers
                     rowsAffected = adminAcc.CheckMstAdmin();
                     if (rowsAffected == 1)
                     {
+                        adminAcc = adminAcc.SelectMstAdmin("All")[0];
                         Session["Account"] = adminAcc;
                         loginValid = true;
                     }

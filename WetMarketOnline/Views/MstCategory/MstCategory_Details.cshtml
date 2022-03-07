@@ -1,0 +1,187 @@
+﻿@using EWM.Models;
+@using EWM.HelperClass;
+@model EWM.Models.MstCategory
+
+@{
+    ViewBag.Title = "EWM - Category Details";
+
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+    List<SelectListItem> parentList = (ViewData["ParentList"] == null) ? new List<SelectListItem>() : (List<SelectListItem>)ViewData["ParentList"];
+}
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#CatLevel").change(e => {
+                      
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetParentCat_Cb")',
+                data: {
+                    catLevel: $("#CatLevel").val()
+                },
+                dataType: "json",
+                success: function (result) {
+                    $("#ParentCatId").empty();
+                    $(result).each(function () {
+                        $("#ParentCatId").append($("<option></option>").val(this.Value).html(this.Text));
+                    });
+                
+                }
+            });
+        });
+
+    });
+</script>
+
+<h2>@Model.CategoryCode</h2>
+
+<div class="mb-5">
+    <h4>@pageMode</h4>
+    <p class="text-danger">@ViewBag.Error</p>
+    <hr />
+
+    @using (Html.BeginForm("UpdateMstCategory", "MstCategory", new { mode = pageMode }, FormMethod.Post, new { @id = "MstCategoryForm" }))
+    {
+        <dl class="dl-horizontal">
+            @Html.TextBoxFor(model => model.CategoryId, new { @class = "d-none" })
+            <dt>
+                @Html.DisplayNameFor(model => model.CategoryCode)
+            </dt>
+
+            <dd class="mb-4">
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.CategoryCode)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.CategoryCode, new { @class = "form-control", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CategoryDesc)
+            </dt>
+
+            <dd class="mb-4">
+
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.CategoryDesc)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.CategoryDesc, new { @class = "form-control", @required = "true" })
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CatLevel)
+            </dt>
+
+            <dd class="mb-4 text-break">
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.CatLevel)
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.CatLevel, new { @class = "form-control", @type = "number", @step = "1", @min = "1"})
+                    }
+                }
+            </dd>
+
+            @{ if (pageMode == "New" || Model.CatLevel > 1)
+                {
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ParentCatId)
+                    </dt>
+
+                    <dd class="mb-4">
+
+                        @{
+                            if (pageMode == "Details")
+                            {
+                                @Html.DisplayFor(model => model.ParentCatId)
+                            }
+                            else
+                            {                         
+                                @Html.DropDownListFor(model => model.ParentCatId, parentList, new { @class = "form-select" })
+                            }
+                        }
+                    </dd>
+                }
+            }
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+
+            <dd class="mb-4">
+                @{
+                    if (pageMode == "Details")
+                    {
+                        @Html.DisplayFor(model => model.Status)
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
+                    }
+                }
+            </dd>
+
+            @*@  <dt>
+                    Html.DisplayNameFor(model => model.CreatedDate)
+                </dt>
+
+                <dd class="mb-4">
+                    @Html.DisplayFor(model => model.CreatedDate)
+                </dd>*@
+
+
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UpdatedDate)
+            </dt>
+
+            <dd class="mb-4">
+                @Html.DisplayFor(model => model.UpdatedDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </dt>
+
+            <dd class="mb-4">
+                @Html.DisplayFor(model => model.UpdatedBy)
+            </dd>
+
+            @*<dt>
+                    @Html.DisplayNameFor(model => model.UpdatedBy)
+                </dt>*@
+
+            @*<dd class="mb-4">
+                    @Html.DisplayFor(model => model.UpdatedBy)
+                </dd>*@
+
+        </dl>
+    }
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+
+    <a href='@Url.Action("ManageCategory")' class="btn btn-secondary me-3 px-4">Back</a>
+
+    @{
+        if (pageMode != "Details")
+        {
+            <button class="btn btn-success px-4" type="submit" form="MstCategoryForm">Submit</button>
+        }
+    }
+
+</div>
+

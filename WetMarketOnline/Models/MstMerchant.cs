@@ -27,7 +27,8 @@ namespace EWM.Models
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
-
+       
+        // Original Data
         private string OriMerchantId { get; set; }
         private string OriUsername { get; set; }
         private string OriPassword { get; set; }

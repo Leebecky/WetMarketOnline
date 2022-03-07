@@ -1,0 +1,51 @@
+﻿@model IEnumerable<EWM.Models.MstCategory>
+
+<table class="table mb-5">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ParentCatId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdatedDate)
+        </th>
+        <th colspan="3" class="text-center">@Html.ActionLink("Add New", "Details", new { mode = "New" })</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentCatId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedDate)
+            </td>
+            <td>
+            <td>
+                @Html.ActionLink("Edit", "Details", new { id = item.CategoryId, mode = "Edit", catLevel = item.CatLevel }) |
+                @Html.ActionLink("Details", "Details", new { id = item.CategoryId, mode = "Details", catLevel = item.CatLevel }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CategoryId }, new { onclick = "return confirm('Are you sure you wish to delete category: " + item.CategoryCode + "?');" })
+
+            </td>
+        </tr>
+    }
+
+</table>

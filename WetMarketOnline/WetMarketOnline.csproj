@@ -120,12 +120,14 @@
     <Compile Include="Controllers\MstMerchantController.cs" />
     <Compile Include="Controllers\MstCustomerController.cs" />
     <Compile Include="Controllers\MstAdminController.cs" />
+    <Compile Include="Controllers\MstCategoryController.cs" />
     <Compile Include="Controllers\MstPromotionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="HelperClass\DatabaseManager.cs" />
     <Compile Include="HelperClass\GeneralBLL.cs" />
+    <Compile Include="Models\MstProductCategory.cs" />
     <Compile Include="Models\MstCategory.cs" />
     <Compile Include="Models\MstHomeSlider.cs" />
     <Compile Include="Models\MstProduct.cs" />
@@ -332,6 +334,11 @@
     <Content Include="Views\MstHomeSlider\ManageHomeSlider.cshtml" />
     <Content Include="Views\MstHomeSlider\HomeSlider_ImageDetails.cshtml" />
     <Content Include="Views\MstPromotion\MstPromotion_Details.cshtml" />
+    <Content Include="Views\MstCategory\ManageCategory.cshtml" />
+    <Content Include="Views\MstCategory\MstCategory_Details.cshtml" />
+    <Content Include="Views\MstCategory\ManageCategory_Level.cshtml" />
+    <Content Include="Views\MstMerchant\ManageProduct.cshtml" />
+    <Content Include="Views\MstMerchant\MstProduct_Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

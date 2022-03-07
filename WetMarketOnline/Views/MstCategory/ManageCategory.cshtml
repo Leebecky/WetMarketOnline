@@ -1,0 +1,58 @@
+﻿@*@model IEnumerable<EWM.Models.MstCategory>*@
+
+@{
+    ViewBag.Title = "Manage Category";
+
+    int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+}
+
+<script type="text/javascript">
+    $(document).ready(() => {
+    
+        $(".cat-tab-ctrl").click(e => {
+            var tabId = e.target.id;
+            var catLevel = tabId.replace("cat-tab-", "");
+     
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ManageCategory_Level")',
+                data: {
+                    catLevel: catLevel
+                },
+                dataType: "html",
+                success: function (result) {
+                    $("#cat-tab-content").html(result);
+                }
+            });
+        });
+
+    });
+</script>
+
+
+<h2>Manage Categories</h2>
+
+<p class="text-danger">@ViewBag.Error</p>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    @{
+        for (int i = 1; i <= maxCat; i++)
+        {
+            string active = (i == 1) ? "active" : "";
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @active cat-tab-ctrl" id="cat-tab-@i" data-bs-toggle="tab" type="button" role="tab" aria-controls="cat-@i" aria-selected="true">Cat @i</button>
+            </li>
+        }
+    }
+
+    @*<li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+        </li>*@
+</ul>
+<div class="tab-content mb-5" id="cat-tab-content" style="min-height:250px; max-height:380px; overflow-y: scroll">
+    @{
+        Html.RenderAction("ManageCategory_Level");
+    }
+</div>
