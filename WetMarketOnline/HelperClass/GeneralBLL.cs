@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace EWM.HelperClass
 {
@@ -16,8 +18,8 @@ namespace EWM.HelperClass
         //? Checks if the user type saved in session matches the expected user type for a given page
         public static bool VerifyAccessRight(object sessionUserType, string validUserType)
         {
-            if (sessionUserType == null) { return false;  }
-            if (sessionUserType.ToString() == "" || sessionUserType.ToString() != validUserType) { return false;  }
+            if (sessionUserType == null) { return false; }
+            if (sessionUserType.ToString() == "" || sessionUserType.ToString() != validUserType) { return false; }
             return true;
         }
 
@@ -25,6 +27,34 @@ namespace EWM.HelperClass
         {
             Active,
             Inactive
+        }
+
+        public static List<SelectListItem> GetStatusDropdownItems()
+        {
+            List<SelectListItem> statusList = new List<SelectListItem>()
+            {
+                new SelectListItem()
+                {
+                    Value = "Active",
+                    Text= "Active"
+                },
+            new SelectListItem()
+            {
+                Value = "Inactive",
+                Text = "Inactive"
+            }
+        };
+
+            return statusList;
+        }
+
+        //? Craetes folders in !exists
+        public static void MapFilePath(string filePath)
+        {
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
         }
     }
 }

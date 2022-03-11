@@ -11,7 +11,7 @@ namespace EWM.Models
         private static log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string ObjectName = typeof(MstHomeSlider).AssemblyQualifiedName;
         public static string ListName = typeof(List<MstHomeSlider>).AssemblyQualifiedName;
-        public static string FileDirectory = System.Configuration.ConfigurationManager.AppSettings["UploadDirectoryForPhoto"];
+        //public static string FileDirectory = System.Configuration.ConfigurationManager.AppSettings["UploadDirectoryForPhoto"];
 
         public string SliderPhotoId { get; set; }
         [Display(Name = "File Location")]

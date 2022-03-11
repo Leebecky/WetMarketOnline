@@ -339,6 +339,8 @@
     <Content Include="Views\MstCategory\ManageCategory_Level.cshtml" />
     <Content Include="Views\MstMerchant\ManageProduct.cshtml" />
     <Content Include="Views\MstMerchant\MstProduct_Details.cshtml" />
+    <Content Include="Views\MstMerchant\ProductImage_PopupPartial.cshtml" />
+    <Content Include="Views\MstMerchant\ProductImage_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

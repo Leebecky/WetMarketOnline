@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 
 
+
 namespace EWM.Controllers
 {
     public class MstHomeSliderController : Controller
@@ -49,12 +50,11 @@ namespace EWM.Controllers
             int rowsAffected = -1;
 
             //Get absolute Upload path 
-            string UploadPath = Server.MapPath(MstHomeSlider.FileDirectory);
+            string UploadPath = Server.MapPath(GeneralBLL.FileDirectory);
 
             // File Path Configuration
             if (FormFileUpload != null)
             {
-                //string fileName = Path.GetFileNameWithoutExtension(FormFileUpload.FileName);      
                 string fileName = formData.Filename;
                 fileExtension = Path.GetExtension(FormFileUpload.FileName);
 
@@ -63,6 +63,8 @@ namespace EWM.Controllers
 
                 //Create relative path to store in server.  
                 filePath = typeof(MstHomeSlider).Name + "/" + completeFileName;
+
+                GeneralBLL.MapFilePath(string.Concat(UploadPath, typeof(MstHomeSlider).Name));
 
                 //To copy and save file into server.  
                 FormFileUpload.SaveAs(String.Concat(UploadPath, filePath));
@@ -106,7 +108,7 @@ namespace EWM.Controllers
             {
                 ViewBag.Error = "Error processing request. Please try again";
                 return View("HomeSlider_ImageDetails", formData);
-            }
+        }
 
         }
 
@@ -116,7 +118,7 @@ namespace EWM.Controllers
             MstHomeSlider slider = MstHomeSlider.GetMstHomeSlider(id);
             int rowsAffected = slider.DeleteMstHomeSlider();
 
-            string UploadPath = Server.MapPath(MstHomeSlider.FileDirectory);
+            string UploadPath = Server.MapPath(GeneralBLL.FileDirectory);
             System.IO.File.Delete(String.Concat(UploadPath, slider.FileLocation));
 
             if (rowsAffected == 1)

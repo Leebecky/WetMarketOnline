@@ -135,7 +135,7 @@ namespace EWM.Models
         //? Get the max number of categories
         public static int GetMaxCat()
         {
-            string sql = "Select max(cat_level) from mst_category";
+            string sql = "Select IsNull(max(cat_level), 1) from mst_category";
             SqlCommand cmd = new SqlCommand(sql);
             DataTable dt = DatabaseManager.ExecuteQueryCommand_Datatable(cmd);
 
