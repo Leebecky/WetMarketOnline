@@ -1,17 +1,91 @@
-﻿@{
-    ViewBag.Title = "Customer Home";
+﻿@model EWM.Models.MstCustomer
+
+@{
+    ViewBag.Title = "Customer Profile";
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<h2>Customer Profile</h2>
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<div>
+    <hr />
+    <div class="dl-horizontal">
+        @Html.TextBoxFor(model => model.CustomerId, new { @class = "d-none" })
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Postcode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Postcode)
+        </dd>
+        @Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" });
+    </div>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+
+    <a href='@Url.Action("ManageProduct")' class="btn btn-secondary px-4">Back</a>
+
+    @{
+        if (pageMode != "Details")
+        {
+            <button class="btn btn-success px-4" type="submit" form="MstProductForm">Submit</button>
+        }
+         
+        if (pageMode == "Details")
+        {
+            <button class="btn btn-warning px-4" type="submit" form="MstProductForm">Edit</button>
+        }
+    }
+
+</div>

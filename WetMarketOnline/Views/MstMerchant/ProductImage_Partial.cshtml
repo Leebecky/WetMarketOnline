@@ -1,38 +1,55 @@
 ﻿@using EWM.Models;
 @model List<MstProductImage>
 
-@{ 
+@{
     string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
 }
 
-    <fieldset class="list-group border border-2 border-dark py-3 px-3">
-        <legend class="float-none w-auto p-1">Product Images</legend>
-        <button class="btn btn-primary mb-3 productImgBtn" type="button" data-bs-toggle="modal" data-bs-target="#productImagePopup" img-id="" img-mode="New">Add New Image</button>
-             
+<div class="list-group mt-4">
+    <h4>Product Images</h4>
+    <hr />
+    @*<div class="list-group border border-2 border-dark py-3 px-3">
+        @*<legend class="float-none w-auto p-1">Product Images</legend>*@
 
-        @{
-            for (int i = 0; i < Model.Count; i++)
-            {
-                MstProductImage img = Model[i];
-                string filePath = string.Concat(directory, img.FileLocation);
 
-                <div class="card mb-3 mx-auto" style="min-width: 80%;" >
-                    <div class="row g-0">
-                        <div class="col-md-4 my-auto mx-lg-0 mx-auto"  style="max-width:250px">
-                            <img src="@filePath" class="img-fluid rounded" alt="@img.Filename">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="card-title">@img.Filename</h5>
-                                    <button class="btn btn-warning productImgBtn" img-id="@img.ProductImageId" img-mode="Edit" type="button" data-bs-toggle="modal" data-bs-target="#productImagePopup" >Edit</button>
-                                </div>
-                                <p class="card-text">@img.ImageDesc</p>
-                                <p class="card-text"><small class="text-muted">Image Order: @img.ImageOrder</small></p>
-                                <p class="card-text"><small class="text-muted">Status: @img.Status</small></p>
-                            </div>
-                        </div>
-                    </div></div>
-            }
+    @{
+        if (pageMode != "Details")
+        {
+            <div class="container-fluid">
+                <button class="btn btn-primary mb-5 productImgBtn col-lg-4 col-sm-12 float-end" type="button" data-bs-toggle="modal" data-bs-target="#productImagePopup" img-id="" img-mode="New">Add New Image</button>
+            </div>
         }
-    </fieldset>
+
+
+        for (int i = 0; i < Model.Count; i++)
+        {
+            MstProductImage img = Model[i];
+            string filePath = string.Concat(directory, img.FileLocation);
+
+            <div class="card mb-3 mx-auto" style="min-width: 80%;">
+                <div class="row g-0">
+                    <div class="col-md-4 my-auto mx-lg-0 mx-auto" style="max-width:250px">
+                        <img src="@filePath" class="img-fluid rounded" alt="@img.Filename">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">@img.Filename</h5>
+                                @{
+                                    if (pageMode != "Details")
+                                    {
+                                        <button class="btn btn-warning productImgBtn" img-id="@img.ProductImageId" img-mode="Edit" type="button" data-bs-toggle="modal" data-bs-target="#productImagePopup">Edit</button>
+                                    }
+                                }
+                            </div>
+                            <p class="card-text">@img.ImageDesc</p>
+                            <p class="card-text"><small class="text-muted">Image Order: @img.ImageOrder</small></p>
+                            <p class="card-text"><small class="text-muted">Status: @img.Status</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

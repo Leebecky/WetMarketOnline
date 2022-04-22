@@ -175,7 +175,7 @@ namespace EWM.Controllers
             return RedirectToAction("ManageProduct");
         }
 
-        public ActionResult ProductImage_Partial(string productId, List<MstProductImage> imgList = null)
+        public ActionResult ProductImage_Partial(string productId, List<MstProductImage> imgList = null, string pageMode = "")
         {
 
 
@@ -184,7 +184,8 @@ namespace EWM.Controllers
                 MstProductImage search = new MstProductImage() { ProductId = productId };
                 imgList = search.SelectMstProductImage("All");
             }
-            
+
+            ViewData["PageMode"] = pageMode;
             return PartialView(imgList);
         }
 
@@ -306,6 +307,7 @@ namespace EWM.Controllers
         [HttpPost]
         public ActionResult DeleteProductImage(string id)
         {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Merchant")) { return RedirectToAction("Login", "Account"); }
             MstProductImage delItem = MstProductImage.GetMstProductImage(id);
             int rowsAffected = delItem.DeleteMstProductImage();
 
