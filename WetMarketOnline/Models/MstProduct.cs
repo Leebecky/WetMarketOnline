@@ -101,7 +101,7 @@ namespace EWM.Models
         //? Insert new record
         public int CreateMstProduct(string userName = "")
         {
-            this.ProductId = Guid.NewGuid().ToString();
+            this.ProductId = (String.IsNullOrEmpty(this.ProductId)) ?  Guid.NewGuid().ToString()  : this.ProductId;
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
             this.CreatedBy = userName;
@@ -158,11 +158,11 @@ namespace EWM.Models
         }
 
         //? Assembles a complete set of data for MstProduct
-        public MstProduct GetCompleteProductData(string productId)
+        public static MstProduct GetCompleteProductData(string productId)
         {
             MstProduct product = GetMstProduct(productId);
-            product.CatList = GetMstProductCategoryData();
-            product.ImageList = GetImageList();
+            product.CatList = product.GetMstProductCategoryData();
+            product.ImageList = product.GetMstProductImageData();
             return product;
         }
 
@@ -180,7 +180,7 @@ namespace EWM.Models
 
                 foreach (var item in productCatList)
                 {
-                    MstCategory cat = MstCategory.GetMstCategory(item.CategoryId);
+                    MstCategory cat = MstCategory.GetMstCategory(item.CatId);
                     catList.Add(cat);
                 }
             }
@@ -199,8 +199,7 @@ namespace EWM.Models
             {
                 MstProductImage productImg = new MstProductImage
                 {
-                    ProductId = this.ProductId,
-                    Status = "Active"
+                    ProductId = this.ProductId
                 };
                 productImgList = productImg.SelectMstProductImage("All");
             }

@@ -6,7 +6,7 @@
     ViewBag.Title = "EWM - Home Slider";
 
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
-    string directory = MstHomeSlider.FileDirectory;
+    string directory = GeneralBLL.FileDirectory;
     string imgPath = Url.Content(string.Concat("~", directory, Model.FileLocation));
     string altText = string.IsNullOrEmpty(Model.ImageDesc) ? "<< No Image >>" : Model.ImageDesc;
 }

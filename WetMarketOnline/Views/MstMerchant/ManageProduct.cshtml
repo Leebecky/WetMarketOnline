@@ -1,80 +1,88 @@
-﻿@model IEnumerable<EWM.Models.MstProduct>
+﻿@using EWM.Models;
+@model IEnumerable<EWM.Models.MstProduct>
 
 @{
     ViewBag.Title = "ManageProducts";
 }
 
-<h2>ManageProducts</h2>
+<h2>Manage Products</h2>
 
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ProductCode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ProductName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MerchantId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedBy)
-        </th>
-        <th colspan="3" class="text-center">@Html.ActionLink("Add New", "Details", new { mode = "New" })</th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<div class="table-responsive">
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MerchantId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedBy)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Details", new { id = item.ProductId, mode = "Edit" }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ProductId, mode = "Details" }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ProductId }, new { onclick = "return confirm('Are you sure you wish to delete category: " + item.ProductName + "?');" })
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MerchantId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>
+            <th colspan="3" class="text-center">@Html.ActionLink("Add New", "ProductDetails", new { mode = "New" })</th>
         </tr>
-    }
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @{
+                        MstMerchant merchant = MstMerchant.GetMstMerchant(item.MerchantId);
+                    }                       
+                        @merchant.Name
+                    @Html.DisplayText(merchant.Name)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedBy)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "ProductDetails", new { id = item.ProductId, mode = "Edit" }) |
+                    @Html.ActionLink("Details", "ProductDetails", new { id = item.ProductId, mode = "Details" }) |
+                    @Html.ActionLink("Delete", "DeleteProduct", new { id = item.ProductId }, new { onclick = "return confirm('Are you sure you wish to delete item: " + item.ProductName + "?');" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

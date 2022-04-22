@@ -1,0 +1,102 @@
+﻿@model EWM.Models.MstProductImage
+
+@{
+    //string mode = (ViewData["PopupMode"] == null) ? "" : ViewData["PopupMode"].ToString();
+}
+
+<!-- Modal -->
+<div class="modal fade" id="productImagePopup" tabindex="-1" aria-labelledby="productImagePopupLabel" aria-hidiven="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productImagePopupLabel">Product Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            @using (Html.BeginForm("SaveMstProductImage", "MstMerchant", FormMethod.Post, new { enctype = "multipart/form-data", @id = "MstProductImageForm" }))
+            {
+                <div class="modal-body">
+                    @Html.TextBoxFor(model => model.ProductImageId, new { @class = "visually-hidden" })
+                    @Html.TextBox("ProductId_Img", "", new { @class = "visually-hidden" })
+                    @Html.TextBox("Mode_Img", "", new { @class = "visually-hidden" })
+                    <div>
+                        @Html.DisplayNameFor(model => model.Filename)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.Filename, new { @class = "form-control" })
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.ImageDesc)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.ImageDesc, new { @class = "form-control" })
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.FileLocation)
+                    </div>
+
+                    <div class="mb-4 text-break">
+                        @Html.TextBoxFor(model => model.FileLocation, new { @readonly = "true", @class = "form-control" })
+                        <div class="row-cols-sm-3 row-cols-lg-6 mt-sm-3">
+                            <button id="btnFile" type="button" class="btn btn-primary end-0" onclick="OpenFileDialog()">Upload File</button>
+                            <input class="form-control visually-hidden" type="file" id="ProductImageUpload" name="ProductImageUpload" onchange="IndicateFileUpload()">
+
+                        </div>
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.ImageOrder)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.ImageOrder, new { @class = "form-control", @type = "number", @step = "1", @min = "1", @required = "true" })
+                    </div>
+
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.ExtensionType)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.ExtensionType, new { @class = "form-control border-0 bg-transparent", @readonly = "true" })
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.DropDownList("Status_Img", EWM.HelperClass.GeneralBLL.GetStatusDropdownItems(), new { @class = "form-select" })
+
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.UpdatedDate)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.UpdatedDate, new { @class = "form-control border-0 bg-transparent", @readonly = "true" })
+                    </div>
+
+                    <div>
+                        @Html.DisplayNameFor(model => model.UpdatedBy)
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.TextBoxFor(model => model.UpdatedBy, new { @class = "form-control border-0 bg-transparent", @readonly = "true" })
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="DeleteProductImage()">Delete</button>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-primary" onclick="SubmitProductImage()" data-bs-dismiss="modal">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

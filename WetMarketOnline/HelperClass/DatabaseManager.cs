@@ -305,7 +305,7 @@ namespace EWM.HelperClass
                         {
                             if (exists)
                             {
-                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(DateTime) : dr[colName];
+                                propValue = (!dr.IsDBNull(dr.GetOrdinal(colName))) ? dr[colName] : (isNullable) ? (DateTime?)null : default(DateTime); ;
                             }
                             else
                             {
@@ -316,7 +316,7 @@ namespace EWM.HelperClass
                         {
                             if (exists)
                             {
-                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(int) : dr[colName];
+                                propValue = (!dr.IsDBNull(dr.GetOrdinal(colName))) ? dr[colName] : isNullable ? (int?)null : default(int);
                             }
                             else
                             {
@@ -327,7 +327,7 @@ namespace EWM.HelperClass
                         {
                             if (exists)
                             {
-                                propValue = (dr.IsDBNull(dr.GetOrdinal(colName))) ? default(decimal) : dr[colName];
+                                propValue = (!dr.IsDBNull(dr.GetOrdinal(colName))) ?  dr[colName] : isNullable ? (decimal?)null : default(decimal);
                             }
                             else
                             {

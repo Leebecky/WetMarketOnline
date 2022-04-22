@@ -17,7 +17,7 @@ namespace EWM.Controllers
         {
             MstHomeSlider slider = new MstHomeSlider();
             slider.Status = "Active";
-            string directory = MstHomeSlider.FileDirectory;
+            string directory = GeneralBLL.FileDirectory;
             List<MstHomeSlider> sliderImages = slider.SelectMstHomeSlider("All");
             ViewData["HomeImgSlider"] = sliderImages;
             return View();

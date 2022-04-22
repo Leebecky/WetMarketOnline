@@ -16,16 +16,16 @@ namespace EWM.Models
 
         public string ProductCatId { get; set; }
         public string ProductId { get; set; }
-        public string CategoryId { get; set; }
+        public string CatId { get; set; }
         public string Status { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
-        public string OriProductCatId { get; set; }
-        public string OriProductId { get; set; }
-        private string OriCategoryId { get; set; }
+        private string OriProductCatId { get; set; }
+        private string OriProductId { get; set; }
+        private string OriCatId { get; set; }
         private string OriStatus { get; set; }
         private DateTime? OriCreatedDate { get; set; }
         private string OriCreatedBy { get; set; }
@@ -56,7 +56,7 @@ namespace EWM.Models
         //? Insert new record
         public int CreateMstProductCategory(string userName = "")
         {
-            this.CategoryId = Guid.NewGuid().ToString();
+            this.ProductCatId = Guid.NewGuid().ToString();
             this.Status = "Active";
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;

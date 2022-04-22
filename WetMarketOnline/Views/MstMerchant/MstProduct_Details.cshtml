@@ -6,10 +6,176 @@
     ViewBag.Title = "Product Details";
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
     int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
-    string directory = GeneralBLL.FileDirectory;
-    //string imgPath = Url.Content(string.Concat("~", directory, Model.GetImageList()[0].FileLocation));
-    //string altText = string.IsNullOrEmpty(Model.ImageDesc) ? "<< No Image >>" : Model.ImageDesc;
+
+    List<MstCategory> catList = Model.GetCatList();
+    List<MstProductImage> imgList = Model.GetMstProductImageData();
 }
+
+
+<script type="text/javascript">
+
+    $(document).ready(() => {
+        //Initial load for category data
+        FetchCatData(1);
+
+        // Trigger load for category data on selection
+        $(".cat-data").change(e => {
+
+            var ctrlId = e.target.id;
+            var cat = parseInt(ctrlId.replace("Cat", ""));
+
+            FetchCatData(cat + 1);
+        });
+
+    // Loads and displays the popup for editing/adding product images
+        $("#product-image-list").on("click", ".productImgBtn", function(e) {
+            console.log("CLikc")
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ProductImage_PopupPartial")',
+                data: {
+                    productId: $("#ProductId").val(),
+                    productImageId: e.target.getAttribute("img-id"),
+                    mode: e.target.getAttribute("img-mode")
+                },
+                dataType: "json",
+                success: function (result) {
+                    console.log(result)
+                    $("#ProductId_Img").val(result.ProductId);
+                    $("#ProductImageId").val(result.ProductImageId);
+                    $("#Mode_Img").val(e.target.getAttribute("img-mode"));
+                    $("#Filename").val(result.Filename);
+                    $("#ImageDesc").val(result.ImageDesc);
+                    $("#ImageOrder").val(result.ImageOrder);
+                    $("#FileLocation").val(result.FileLocation);
+                    $("#ExtensionType").val(result.ExtensionType);
+                    $("#UpdatedDate").val(result.UpdatedDate);
+                    $("#UpdatedBy").val(result.UpdatedBy);
+                    $("#productImagePopup #Status_Img option[value='"+result.Status+"']").attr("selected", true);
+                }
+        });
+            });
+    });
+
+
+    // Open the file uploader on click of the button
+    function OpenFileDialog() {
+        $("#ProductImageUpload").click();
+    }
+
+    // Change the look of the Upload File button to indicate file upload status
+    function IndicateFileUpload() {
+        if ($("#ProductImageUpload").val() != "") {
+
+            $("#productImagePopup #btnFile").addClass("btn-success");
+            $("#productImagePopup #btnFile").removeClass("btn-primary");
+            $("#productImagePopup #btnFile").text("File Uploaded");
+        } else {
+            $("#productImagePopup #btnFile").addClass("btn-primary");
+            $("#productImagePopup #btnFile").removeClass("btn-success");
+            $("#productImagePopup #btnFile").text("Upload File");
+        }
+    }
+
+
+    // Submit the data entered in the popup
+    function SubmitProductImage() {
+        var form = $('#MstProductImageForm')[0];
+        var data = new FormData(form);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveMstProductImage")',
+                processData: false,
+                contentType: false,
+                data: data,
+                success: function (result) {
+                    console.log(result);
+                    if (result != "OK") {
+                        alert("Unexepected error encountered while saving data. Please try again");
+                    }
+                }, complete: function (response) {
+                    ReloadProductImages();
+                }
+            });
+    }
+
+    // Reload the Product Image partial view
+    function ReloadProductImages() {
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("ProductImage_Partial")',
+                data: {
+                    productId: $("#ProductId").val(),
+                },
+                dataType: "html",
+                 success: function (result) {
+                     //console.log(result)
+                    //$("#product-image-list").empty();
+                    $("#product-image-list").html(result);
+                }
+            });
+    }
+
+    // Delete the requested product image
+    function DeleteProductImage() {
+        var decision = confirm("Do you really want to delete this image?");
+
+        if (decision) {
+            var imgId = $("#ProductImageId").val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteProductImage")',
+                data: { id: imgId },
+                success: function (result) {
+                    //console.log(result);
+                    if (result != "OK") {
+                        alert(result);
+                    }
+                }, complete: function (response) {
+                    ReloadProductImages();
+                }
+            });
+        }
+    }
+
+    // AJAX for retrieving category data
+    function FetchCatData(catLevel) {
+
+        var jsCatList = @Html.Raw(Json.Encode(catList));
+        var currentItem = (jsCatList != null)  ? jsCatList.find(obj => { return obj.CatLevel == catLevel }) : null;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetParentCat_Cb")',
+                data: {
+                    catLevel: catLevel,
+                    parentId: (catLevel > 1) ? $("#Cat" + (parseInt(catLevel) - 1)).val() : "",
+                    pageMode: "@pageMode",
+                    selectedData: (currentItem != null) ? currentItem.CategoryId : ""
+                },
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+
+                    $("#Cat" + catLevel).empty();
+                    $(result).each(function () {
+                        $("#Cat" + catLevel).append($("<option></option>").attr("selected", this.Selected).val(this.Value).html(this.Text));
+                    });
+
+                },
+                complete: function (response) {
+                    if (catLevel <= @maxCat) {
+
+                    FetchCatData(catLevel+1)
+                    }
+                }
+            });
+
+    }
+</script>
+
 
 <h2>@Model.ProductCode</h2>
 <div class="row justify-content-center">
@@ -19,185 +185,244 @@
 </div>
 
 <div class="mb-5">
-    <h4>@pageMode</h4>
+    <h4>Product @pageMode</h4>
     <p class="text-danger">@ViewBag.Error</p>
     <hr />
 
-    @using (Html.BeginForm("UpdateMstProduct", "MstMerchant", new { mode = pageMode }, FormMethod.Post, new { @id = "MstProductForm" }))
+    @using (Html.BeginForm("UpdateMstProduct", "MstMerchant", new { mode = pageMode, maxCat }, FormMethod.Post, new { @id = "MstProductForm" }))
     {
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.ProductCode)
-            </dt>
+        <div class="dl-horizontal">
+            @Html.TextBoxFor(model => model.ProductId, new { @class = "d-none" })
 
-            <dd>
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.ProductCode)
+                    </div>
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.ProductCode)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.ProductCode, new { @class = "form-control", @required = "true" })
+                        }
+                    }
+                </div>
+
+
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.ProductName)
+                    </div>
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.ProductName)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.ProductName, new { @class = "form-control", @required = "true" })
+                        }
+                    }
+
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.ProductDesc)
+                    </div>
+
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.ProductDesc)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.ProductDesc, new { @class = "form-control", @required = "true" })
+                        }
+                    }
+                </div>
+
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.MerchantId)
+                    </div>
+
+                    @{
+                        MstMerchant merchant = (MstMerchant)Session["Account"];
+                        if (pageMode == "New")
+                        {
+                            Model.MerchantId = merchant.MerchantId;
+                        }
+
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayText(merchant.Name)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.MerchantId, new { @class = "form-control d-none", @readonly = "true" })
+                            @Html.TextBox("MerchantUsername", merchant.Name, new { @class = "form-control", @readonly = "true" })
+                        }
+                    }
+
+                </div>
+
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.Price)
+                    </div>
+
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.Price)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.Price, new { @class = "form-control", @type = "number", @step = "0.001", @min = "0", @required = "true" })
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.Quantity)
+                    </div>
+
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.Quantity)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control", @type = "number", @step = "1", @min = "1", @required = "true" })
+                        }
+                    }
+                </div>
+
+
+                <div class="col">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.Rating)
+                    </div>
+
+
+                    @Html.DisplayFor(model => model.Rating)
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <div class="fw-bold">
+                        @Html.DisplayNameFor(model => model.Status)
+                    </div>
+
+
+                    @{
+                        if (pageMode == "Details")
+                        {
+                            @Html.DisplayFor(model => model.Status)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
+                        }
+                    }
+
+                </div>
+            </div>
+
+            @*<div class="row mb-3">
+                    <div class="col">
+                        <div class="fw-bold">
+                            @Html.DisplayNameFor(model => model.UpdatedDate)
+                        </div>
+
+
+                        @Html.DisplayFor(model => model.UpdatedDate)
+
+                    </div>
+
+                    <div class="col">
+                        <div class="fw-bold">
+                            @Html.DisplayNameFor(model => model.UpdatedBy)
+                        </div>
+
+
+                        @Html.DisplayFor(model => model.UpdatedBy)
+
+                    </div>
+                </div>*@
+
+            <h4 class="mt-5">Product Category</h4>
+            <hr />
+            <div class="row">
                 @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.ProductCode)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.ProductCode, new { @class = "form-control", @required = "true" })
-                    }
-                }
-            </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </dt>
+                    for (int i = 1; i <= maxCat; i++)
+                    {
+                        <div class="col-6 mb-3">
+                            <div class="fw-bold">
+                                @Html.DisplayName("Category " + i)
+                            </div>
+                            @{
 
-            <dd>
-                @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.ProductName)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.ProductName, new { @class = "form-control", @required = "true" })
-                    }
-                }
-            </dd>
+                                MstCategory catData = (catList == null) ? null : catList.Find(l => l.CatLevel == i);
+                                string catValue = (catData == null) ? "" : catData.CategoryCode;
+                                if (pageMode == "Details")
+                                { 
 
-            <dt>
-                @Html.DisplayNameFor(model => model.ProductDesc)
-            </dt>
+                                        @catValue
+                                    
+                                }
+                                else
+                                {                                   
+                                        @Html.DropDownList("Cat" + i, new List<SelectListItem>(), "Please Select", new { @class = "form-select mb-3 cat-data", @id = $"Cat{i}" })
+                                    
+                                }
 
-            <dd>
-                @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.ProductDesc)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.ProductDesc, new { @class = "form-control", @required = "true" })
+                            }
+                        </div>
                     }
                 }
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.MerchantId)
-            </dt>
-
-            <dd>
-                @{
-                    MstMerchant merchant = (MstMerchant)Session["Account"];
-                    if (pageMode == "New")
-                    {
-                        Model.MerchantId = merchant.MerchantId;
-                    }
-
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayText(merchant.Username)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.MerchantId, new { @class = "form-control", @readonly = "true" })
-                        @Html.TextBox("MerchantUsername", merchant.Username, new { @class = "form-control", @readonly = "true" })
-                    }
-                }
-
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Price)
-            </dt>
-
-            <dd>
-                @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.Price)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control", @type = "number", @step = "0.001", @min = "0", @required = "true" })
-                    }
-                }
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </dt>
-
-            <dd>
-                @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.Quantity)
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control", @type = "number", @step = "1", @min = "1", @required = "true" })
-                    }
-                }
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Rating)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Rating)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Status)
-            </dt>
-
-            <dd>
-                @{
-                    if (pageMode == "Details")
-                    {
-                        @Html.DisplayFor(model => model.Status)
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
-                    }
-                }
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.UpdatedDate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.UpdatedBy)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.UpdatedBy)
-            </dd>
-
-            @{
-                List<MstCategory> catList = Model.GetCatList();
-                for (int i = 1; i <= maxCat; i++)
-                {
-                    MstCategory catData = (catList == null) ? null : catList.Find(l => l.CatLevel == i);
-                    if (catData != null)
-                    {
-                        <dd>
-                            @Html.Display(catData.CategoryCode);
-                        </dd>
-                    }
-                }
-
-            }
-
-        </dl>
+            </div>
+        </div>
     }
+
+    @*Product Images*@
+    <div id="product-image-list">
+        @{Html.RenderAction("ProductImage_Partial", new { productId = Model.ProductId, imgList, pageMode }); }
+    </div>
+
+    <div id="productImagePopup-div">
+        @{
+            Html.RenderPartial("ProductImage_PopupPartial", new MstProductImage() { ProductId = Model.ProductId });
+        }
+    </div>
+
+
+
 </div>
 <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
 
-    <a href='@Url.Action("ManageProduct")' class="btn btn-secondary me-3 px-4">Back</a>
+    <a href='@Url.Action("ManageProduct")' class="btn btn-secondary px-4">Back</a>
 
     @{
         if (pageMode != "Details")
