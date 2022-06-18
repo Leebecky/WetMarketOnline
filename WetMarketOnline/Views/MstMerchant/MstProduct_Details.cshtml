@@ -3,12 +3,14 @@
 @model EWM.Models.MstProduct
 
 @{
-    ViewBag.Title = "Product Details";
-    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
-    int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+                /**/
 
-    List<MstCategory> catList = Model.GetCatList();
-    List<MstProductImage> imgList = Model.GetMstProductImageData();
+                ViewBag.Title = "Product Details";
+                string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+                int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+
+                List<MstCategory> catList = Model.GetCatList();
+                List<MstProductImage> imgList = Model.GetMstProductImageData();
 }
 
 
@@ -387,15 +389,15 @@
                                 MstCategory catData = (catList == null) ? null : catList.Find(l => l.CatLevel == i);
                                 string catValue = (catData == null) ? "" : catData.CategoryCode;
                                 if (pageMode == "Details")
-                                { 
+                                {
 
-                                        @catValue
-                                    
+                                    @catValue
+
                                 }
                                 else
-                                {                                   
-                                        @Html.DropDownList("Cat" + i, new List<SelectListItem>(), "Please Select", new { @class = "form-select mb-3 cat-data", @id = $"Cat{i}" })
-                                    
+                                {
+                                    @Html.DropDownList("Cat" + i, new List<SelectListItem>(), "Please Select", new { @class = "form-select mb-3 cat-data", @id = $"Cat{i}" })
+
                                 }
 
                             }

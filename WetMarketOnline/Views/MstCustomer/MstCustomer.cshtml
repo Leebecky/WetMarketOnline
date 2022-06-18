@@ -21,13 +21,13 @@
             @Html.DisplayFor(model => model.Username)
         </dd>
 
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.Password)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Password)
-        </dd>
+        </dd>*@
 
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -68,15 +68,16 @@
         <dd>
             @Html.DisplayFor(model => model.Postcode)
         </dd>
-        @Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" });
+        @*@Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" })*@
     </div>
 </div>
 
 <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
 
-    <a href='@Url.Action("ManageProduct")' class="btn btn-secondary px-4">Back</a>
+    @*<a href='@Url.Action("ManageProduct")' class="btn btn-secondary px-4">Back</a>*@
+    <a href='@Url.Action("MstCustomer_Edit")' class="btn btn-warning px-4">Edit</a>
 
-    @{
+    @*@{
         if (pageMode != "Details")
         {
             <button class="btn btn-success px-4" type="submit" form="MstProductForm">Submit</button>
@@ -86,6 +87,6 @@
         {
             <button class="btn btn-warning px-4" type="submit" form="MstProductForm">Edit</button>
         }
-    }
+    }*@
 
 </div>
