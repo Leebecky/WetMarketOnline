@@ -29,6 +29,31 @@ namespace EWM.HelperClass
             Inactive
         }
 
+       
+        public static List<String> getStateList()
+        {
+            List<String> stateList = new List<string>
+            {
+                "Johor",
+                "Kedah",
+                "Kelantan",
+                "Malacca",
+                "Negeri Sembilan",
+                "Pahang",
+                "Penang",
+                "Perlis",
+                "Sabah",
+                "Sarawak",
+                "Selangor",
+                "Terengganu",
+                "Kuala Lumpur",
+                "Labuan",
+                "Putrajaya"
+            };
+
+            return stateList;
+        }
+
         public static List<SelectListItem> GetStatusDropdownItems()
         {
             List<SelectListItem> statusList = new List<SelectListItem>()
