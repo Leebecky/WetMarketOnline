@@ -1,0 +1,93 @@
+﻿@using EWM.Models;
+@model List<MstCategory>
+@{
+
+    ViewBag.Title = "Product Listing";
+    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+}
+
+
+
+
+<h2>Browse Products</h2>
+@{
+    foreach (var item in Model)
+    {
+        Html.RenderAction("Product_CategorySliderPartial", new { catId = item.CategoryId, catDesc = item.CategoryDesc});
+    }
+}
+
+@*
+    @{
+        <!-- Carousel -->
+        <div id="slider" class="carousel" data-bs-ride="carousel">
+           <b>CATEGORY NAME</b>
+
+            <!-- The slideshow/carousel -->
+            <div id="carousel-inner-id" class="carousel-inner">
+                @{
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                        string active = (i == 0) ? "active" : "";
+
+                        // Product Item
+                        MstProduct item = Model[i];
+                        MstProductImage img = item.GetImageList().OrderBy(l => l.ImageOrder).ToList()[0];
+                        string imgLink = (img != null) ? String.Concat(directory, img.FileLocation) : "";
+                        string desc = (img != null) ? img.ImageDesc : "Image not found";
+                        decimal price = Decimal.Round(item.Price.Value, 2);
+
+                        <div id="product-display" class="carousel-item @active">
+                            <!-- Card Reference: https://bootstrapious.com/p/bootstrap-cards-->
+                            <div class="card rounded shadow-sm border-0">
+                                <div class="card-body p-4">
+                                    <img src="@imgLink" alt="@desc" class="img-fluid d-block mx-auto mb-3">
+                                    <h5> <a href="#" class="text-dark">@item.ProductName</a></h5>
+                                    <p class="small text-muted font-italic">@item.ProductDesc.</p>
+                                    <p class="small text-muted font-italic">RM @price</p>
+                                    <ul class="list-inline small">
+
+                                        @{
+                                            for (int k = 0; k < (int)item.Rating; k++)
+                                            {
+                                                <li class="list-inline-item m-0"><i class="bi bi-star-fill text-success"></i></li>
+                                            }
+
+                                            if (item.Rating.ToString().Contains(".5"))
+                                            {
+                                                <li class="list-inline-item m-0"><i class="bi bi-star-half text-success"></i></li>
+                                            }
+
+                                            decimal starsLeft = (5 - item.Rating.Value);
+                                            for (int k = 0; k < (int)starsLeft; k++)
+                                            {
+                                                <li class="list-inline-item m-0"><i class="bi bi-star text-success"></i></li>
+                                            }
+                                        }
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
+                }
+
+            </div>
+            @{
+                if (Model.Count > 1)
+                {
+                    <!-- Left and right controls/icons -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#slider" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#slider" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>}
+            }
+        </div>
+
+    }
+
+*@

@@ -2,12 +2,10 @@
 @using EWM.HelperClass
 
 @{
-    ViewBag.Title = "EWM - Home";
+    ViewBag.Title = "Home";
 
     List<MstHomeSlider> sliderImages = (List<MstHomeSlider>)ViewData["HomeImgSlider"];
 }
-
-
 
 
 <!-- Carousel -->
@@ -22,7 +20,6 @@
                 string active = (i == 0) ? "active" : "";
                 <button type="button" data-bs-target="#homeImgSlider" data-bs-slide-to="@i" class="@active"></button>
             }
-
         }
 
     </div>
@@ -70,7 +67,7 @@
         <div class="card col mx-3" style="width: 18rem;">
             <div class="card-body">
                 <h4 class="card-title">Vegetables</h4>
-                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Vegetables.jpg" alt="Photo of various vegetables" /></a>
+                <a href='@Url.Action("Product_All", "Product", new { section = "Vegetables" })'><img class="card-img-top" src="~/Content/Img/Vegetables.jpg" alt="Photo of various vegetables" /></a>
             </div>
         </div>
 
@@ -78,7 +75,7 @@
         <div class="card col mx-3" style="width: 18rem;">
             <div class="card-body">
                 <h4 class="card-title">Raw Meat</h4>
-                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Raw Meat.jpg" alt="Photo of Meat" /></a>
+                <a href='@Url.Action("Product_All", "Product", new { section = "Raw Meat" })'><img class="card-img-top" src="~/Content/Img/Raw Meat.jpg" alt="Photo of Meat" /></a>
             </div>
         </div>
 
@@ -86,7 +83,7 @@
         <div class="card col mx-3" style="width: 18rem;">
             <div class="card-body">
                 <h4 class="card-title">Fruits</h4>
-                <a href='@Url.Action("About", "Home")'><img class="card-img-top" src="~/Content/Img/Fruits.jpg" alt="Photo of various Fruits" /></a>
+                <a href='@Url.Action("Product_All", "Product", new { section = "Fruits" })'><img class="card-img-top" src="~/Content/Img/Fruits.jpg" alt="Photo of various Fruits" /></a>
             </div>
         </div>
     </div>

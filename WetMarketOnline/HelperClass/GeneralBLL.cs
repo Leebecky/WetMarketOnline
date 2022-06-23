@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -29,7 +30,29 @@ namespace EWM.HelperClass
             Inactive
         }
 
-       
+
+        public enum States
+        {
+            Johor,
+            Kedah,
+            Kelantan,
+            Malacca,
+            [Description("Negeri Sembilan")]
+            Negeri_Sembilan,
+            Pahang,
+            Penang,
+            Perlis,
+            Sabah,
+            Sarawak,
+            Selangor,
+            Terengganu,
+            [Description("Kuala Lumpur")]
+            Kuala_Lumpur,
+            Labuan,
+            Putrajaya
+        }
+
+
         public static List<String> getStateList()
         {
             List<String> stateList = new List<string>

@@ -18,7 +18,8 @@ namespace EWM.Controllers
         //? Login page
         public ActionResult Login()
         {
-            if ( Session["AccountType"] != null){
+            if (Session["AccountType"] != null)
+            {
                 string userType = "Mst" + Session["AccountType"].ToString();
                 return RedirectToAction(userType, userType);
             }
@@ -207,7 +208,8 @@ namespace EWM.Controllers
             {
                 TempData["Error"] = "This username is in use. Please choose a different username";
                 return RedirectToAction("SignUp");
-            } else
+            }
+            else
             {
                 bool accCreationSuccess = false;
                 switch (userType.ToLower())
@@ -216,6 +218,7 @@ namespace EWM.Controllers
                         MstCustomer customerAcc = new MstCustomer
                         {
                             Username = username,
+                            Name = username,
                             Password = password,
                             Email = email,
                             Address = address,
@@ -235,6 +238,7 @@ namespace EWM.Controllers
                         MstMerchant merchantAcc = new MstMerchant
                         {
                             Username = username,
+                            Name = username,
                             Password = password,
                             Email = email,
                             Address = address,
@@ -255,7 +259,8 @@ namespace EWM.Controllers
                 {
                     Session["AccountType"] = userType;
                     return RedirectToAction("Mst" + userType, "Mst" + userType);
-                } else
+                }
+                else
                 {
                     TempData["Error"] = "Unexpected error encountered. Account not created. Please try again";
                     return RedirectToAction("SignUp");
@@ -265,7 +270,7 @@ namespace EWM.Controllers
 
         //? Reset password of user + send the new password through email
         [HttpPost]
-        public ActionResult ForgotPassword(string resetEmail , string resetUserType)
+        public ActionResult ForgotPassword(string resetEmail, string resetUserType)
         {
             //? 
             string msg = "";
@@ -277,7 +282,7 @@ namespace EWM.Controllers
                 case "Admin":
                     MstAdmin admin = new MstAdmin();
                     admin.Email = resetEmail;
-                  userFound = admin.CheckMstAdmin();
+                    userFound = admin.CheckMstAdmin();
                     break;
 
                 case "Merchant":
@@ -345,11 +350,13 @@ namespace EWM.Controllers
                     smtp.Send(mail);
 
                     msg = "Please check your inbox for your new password";
-                } else
+                }
+                else
                 {
                     msg = "Failed to reset password. Please try again";
                 }
-            } else
+            }
+            else
             {
                 msg = "No user with this email found. Please ensure that you have selected the correct user type";
             }

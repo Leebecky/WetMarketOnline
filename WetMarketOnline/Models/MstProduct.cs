@@ -101,7 +101,8 @@ namespace EWM.Models
         //? Insert new record
         public int CreateMstProduct(string userName = "")
         {
-            this.ProductId = (String.IsNullOrEmpty(this.ProductId)) ?  Guid.NewGuid().ToString()  : this.ProductId;
+            this.ProductId = (String.IsNullOrEmpty(this.ProductId)) ? Guid.NewGuid().ToString() : this.ProductId;
+            this.Rating = 0;
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
             this.CreatedBy = userName;
@@ -158,11 +159,11 @@ namespace EWM.Models
         }
 
         //? Assembles a complete set of data for MstProduct
-        public static MstProduct GetCompleteProductData(string productId)
+        public static MstProduct GetCompleteProductData(string productId, string imgStatus = "")
         {
             MstProduct product = GetMstProduct(productId);
             product.CatList = product.GetMstProductCategoryData();
-            product.ImageList = product.GetMstProductImageData();
+            product.ImageList = product.GetMstProductImageData(imgStatus);
             return product;
         }
 
@@ -192,15 +193,21 @@ namespace EWM.Models
         }
 
         //? Retrieves the Product Category Data
-        public List<MstProductImage> GetMstProductImageData()
+        public List<MstProductImage> GetMstProductImageData(string status = "")
         {
             List<MstProductImage> productImgList = new List<MstProductImage>();
             try
             {
                 MstProductImage productImg = new MstProductImage
                 {
-                    ProductId = this.ProductId
+                    ProductId = this.ProductId        
                 };
+
+                if (status != "")
+                {
+                    productImg.Status = status;
+                }
+
                 productImgList = productImg.SelectMstProductImage("All");
             }
             catch (Exception ex)
@@ -210,7 +217,17 @@ namespace EWM.Models
             return productImgList;
         }
 
+        //? Retrieves all Products - Complete Data > For Product Page Display
+        public static List<MstProduct> GetAllCompleteProductData(string status = "")
+        {
+            List<MstProduct> allProducts = SelectMstProduct_All();
+            for (int i = 0; i < allProducts.Count; i++)
+            {
+                allProducts[i] = GetCompleteProductData(allProducts[i].ProductId, status);
+            }                      
 
+            return allProducts;
+        }
         #endregion        
     }
 }
