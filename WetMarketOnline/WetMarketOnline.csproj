@@ -122,6 +122,7 @@
     <Compile Include="Controllers\MstAdminController.cs" />
     <Compile Include="Controllers\MstCategoryController.cs" />
     <Compile Include="Controllers\MstPromotionController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -144,6 +145,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Database1.mdf" />
+    <Content Include="App_Data\Database1_log.ldf">
+      <DependentUpon>Database1.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap-datepicker.standalone.css" />
@@ -342,9 +347,12 @@
     <Content Include="Views\MstMerchant\ProductImage_PopupPartial.cshtml" />
     <Content Include="Views\MstMerchant\ProductImage_Partial.cshtml" />
     <Content Include="Views\MstCustomer\MstCustomer_Edit.cshtml" />
+    <Content Include="Views\Product\Product_All.cshtml" />
+    <Content Include="Views\Product\Product_CategorySliderPartial.cshtml" />
+    <Content Include="Views\Product\Product_Single.cshtml" />
+    <Content Include="Views\Product\ProductFilter_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Log Files\" />
   </ItemGroup>
   <ItemGroup>
