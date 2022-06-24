@@ -10,20 +10,21 @@ namespace EWM.Controllers
     public class ProductController : Controller
     {
         // GET: Product
-        public ActionResult Product_All(string section = "")
+        public ActionResult ProductAll(string section = "")
         {
             string sectionUrl = "#" + section;
-            MstCategory cat1 = new MstCategory()
-            {
-                CatLevel = 1
-            };
-            List<MstCategory> catList = cat1.SelectMstCategory("All");
+            //MstCategory cat1 = new MstCategory()
+            //{
+            //    CatLevel = 1
+            //};
+            //List<MstCategory> catList = cat1.SelectMstCategory("All");
 
-            if (section != "")
-            {
-                return new RedirectResult(Url.Action("Product_All") + sectionUrl);
-            }
-            return View(catList);
+            //if (section != "")
+            //{
+            //    return new RedirectResult(Url.Action("Product_All") + sectionUrl);
+            //}
+            List<MstProduct> pList = MstProduct.GetAllCompleteProductData("Active");
+            return View(pList);
         }
 
         // Carousel Sliders - Category 1
@@ -35,9 +36,9 @@ namespace EWM.Controllers
         }
 
         // Single Product Item display
-        public ActionResult Product_Single(string productId)
+        public ActionResult ProductSingle(string productId)
         {
-            MstProduct product = MstProduct.GetCompleteProductData("0a70dc09-e5be-44a5-9202-e95f1f1d74f2", "Active");
+            MstProduct product = MstProduct.GetCompleteProductData(productId, "Active");
             return View(product);
         }
 

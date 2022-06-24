@@ -350,6 +350,7 @@
     <Content Include="Views\Product\Product_All.cshtml" />
     <Content Include="Views\Product\Product_CategorySliderPartial.cshtml" />
     <Content Include="Views\Product\Product_Single.cshtml" />
+    <Content Include="Views\Product\ProductFilter_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

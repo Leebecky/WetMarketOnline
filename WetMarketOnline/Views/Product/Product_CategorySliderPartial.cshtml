@@ -70,8 +70,8 @@
                         <!-- Card Reference: https://bootstrapious.com/p/bootstrap-cards-->
                         <div class="card rounded shadow-sm border-0">
                             <div class="card-body p-4">
-                                <img src="@imgLink" alt="@desc" class="img-fluid d-block mx-auto mb-3">
-                                <h5> <a href="#" class="text-dark">@item.ProductName</a></h5>
+                                <img src="@imgLink" alt="@desc" class="product-card-img img-fluid d-block mx-auto mb-3">
+                                <h5> <a href='@Url.Action("Product_Single", new { productId = item.ProductId })' class="text-dark">@item.ProductName</a></h5>
                                 <p class="small text-muted font-italic">@item.ProductDesc.</p>
                                 <p class="small text-muted font-italic">RM @price</p>
                                 <ul class="list-inline small">
@@ -105,7 +105,7 @@
 
         </div>
         @{
-            if (Model.Count > 1)
+            if (Model.Count > 3)
             {
                 <!-- Left and right controls/icons -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#slider" data-bs-slide="prev">
