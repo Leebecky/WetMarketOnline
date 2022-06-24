@@ -267,6 +267,5 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 WetMarketOnline/logfile.txt
-WetMarketOnline/EWM_Media/*
 WetMarketOnline/Log Files/*
 WetMarketOnline/obj/Debug/WetMarketOnline.csproj.CoreCompileInputs.cache
