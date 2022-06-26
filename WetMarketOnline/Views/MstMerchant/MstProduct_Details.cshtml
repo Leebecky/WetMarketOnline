@@ -3,14 +3,12 @@
 @model EWM.Models.MstProduct
 
 @{
-                /**/
+            ViewBag.Title = "Product Details";
+            string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+            int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
 
-                ViewBag.Title = "Product Details";
-                string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
-                int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
-
-                List<MstCategory> catList = Model.GetCatList();
-                List<MstProductImage> imgList = Model.GetMstProductImageData();
+            List<MstCategory> catList = Model.GetCatList();
+            List<MstProductImage> imgList = Model.GetMstProductImageData();
 }
 
 
@@ -31,7 +29,7 @@
 
     // Loads and displays the popup for editing/adding product images
         $("#product-image-list").on("click", ".productImgBtn", function(e) {
-            console.log("CLikc")
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("ProductImage_PopupPartial")',
@@ -92,7 +90,7 @@
                 contentType: false,
                 data: data,
                 success: function (result) {
-                    console.log(result);
+                    //console.log(result);
                     if (result != "OK") {
                         alert("Unexepected error encountered while saving data. Please try again");
                     }

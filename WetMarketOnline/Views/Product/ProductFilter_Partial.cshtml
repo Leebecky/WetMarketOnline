@@ -1,1 +1,53 @@
-﻿
+﻿@using EWM.Models;
+@model List<MstCategory>
+
+
+    @{
+        int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+    }
+   
+    <!-- Modal -->
+    <div class="modal fade" id="productFilterPopup" tabindex="-1" aria-labelledby="productFilterPopupLabel" aria-hidiven="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productFilterPopupLabel">Product Filters</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                @using (Html.BeginForm("FilterProducts", "Product", FormMethod.Post, new { @id = "ProductFilterForm" }))
+                {
+                    <div class="modal-body">
+
+                        <div class="row">
+                            @{
+
+                                for (int i = 1; i <= maxCat; i++)
+                                {
+                                    <div class="col-6 mb-3">
+                                        <div class="fw-bold">
+                                            @Html.DisplayName("Category " + i)
+                                        </div>
+                                        @{
+
+                                            MstCategory catData = (Model == null) ? null : Model.Find(l => l.CatLevel == i);
+                                            string catValue = (catData == null) ? "" : catData.CategoryCode;
+
+                                            @Html.DropDownList("Cat" + i, new List<SelectListItem>(), "Please Select", new { @class = "form-select mb-3 cat-data", @id = $"Cat{i}" })
+
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        @* Popup buttons *@
+                        <div class="modal-footer ">
+                            <button type="button" id="btnFilter" class="btn btn-primary" data-bs-dismiss="modal">Filter</button>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>

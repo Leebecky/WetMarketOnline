@@ -313,6 +313,7 @@
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-CN.min.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\Product\ProductCard_Partial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

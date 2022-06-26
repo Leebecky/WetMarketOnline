@@ -32,6 +32,16 @@
             if (value < 0) { value = 0; }
             $("#itemValue").val(value);
         })
+
+        $("#itemValue").change(e => {
+            var value = parseInt($("#itemValue").val());
+            if (value < 0) { value = 0; }
+                $("#itemValue").val(0);
+
+            if (value > @maxValue) {
+                $("#itemValue").val(@maxValue);
+            }
+    });
     });
 
 
@@ -116,7 +126,7 @@
 
                     <div class="buttons d-flex flex-row mt-5 gap-3">
                         <button class="btn btn-outline-dark" id="subItem"><i class="bi bi-dash"></i></button>
-                        <input class="form-control" id="itemValue" type="text" value="0" aria-label="0" readonly>
+                        <input class="form-control" id="itemValue" type="text" value="0" aria-label="0">
                         <button class="btn btn-outline-dark" id="addItem"><i class="bi bi-plus"></i></button>
                         @*<button class="btn btn-dark">Add to Basket</button>*@
                     </div>
