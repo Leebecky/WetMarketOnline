@@ -4,69 +4,110 @@
 
     ViewBag.Title = "Product Listing";
     string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+    int maxCat = ViewData["MaxCat"] != null ? (int)ViewData["MaxCat"] : 1;
+    List<MstCategory> catList = ViewData["CatList"] != null ? (List<MstCategory>)ViewData["CatList"] : new List<MstCategory>();
 }
 
+<script type="text/javascript">
+    $(document).ready(() => {
+        //Initial load for category data
+        FetchCatData(1);
+
+        // Trigger load for category data on selection
+        $(".cat-data").change(e => {
+
+            var ctrlId = e.target.id;
+            var cat = parseInt(ctrlId.replace("Cat", ""));
+
+            FetchCatData(cat + 1);
+        });
+
+        $("#btnFilter").click(e => {
+          var productFilter = GetProductFilter();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ProductCard_Partial")',
+                data: {
+                    selectedCategories: JSON.stringify(productFilter)
+                },
+                dataType: "html",
+                success: function (result) {
+                    $("#productCardDiv").html(result);
+                }
+            });
+        });
+
+    });
+
+     // AJAX for retrieving category data
+    function FetchCatData(catLevel) {
+
+        var jsCatList = @Html.Raw(Json.Encode(catList));
+        var currentItem = (jsCatList != null)  ? jsCatList.find(obj => { return obj.CatLevel == catLevel }) : null;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetParentCat_Cb")',
+                data: {
+                    catLevel: catLevel,
+                    parentId: (catLevel > 1) ? $("#Cat" + (parseInt(catLevel) - 1)).val() : "",
+                    selectedData: (currentItem != null) ? currentItem.CategoryId : ""
+                },
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+
+                    $("#Cat" + catLevel).empty();
+                    $(result).each(function () {
+                        $("#Cat" + catLevel).append($("<option></option>").attr("selected", this.Selected).val(this.Value).html(this.Text));
+                    });
+
+                },
+                complete: function (response) {
+                    if (catLevel <= @maxCat) {
+
+                    FetchCatData(catLevel+1)
+                    }
+                }
+            });
+    }
+
+    // Retrieve selected filter values
+    function GetProductFilter() {
+        var selectedFilter = new Array();
+
+        for (var i = 1; i <= @maxCat; i++) {
+            var filterValue = $("#Cat" + i).val();
+
+            if (filterValue != "" && filterValue != null) {
+                selectedFilter.push(filterValue);
+            }
+        }
+
+        return selectedFilter;
+    }
+</script>
 
 <h2>Browse Products</h2>
-<button type="button" class="btn btn-primary">Filter</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productFilterPopup">Filter</button>
+@*<button class="btn btn-warning productImgBtn" img-id="@img.ProductImageId" img-mode="Edit" type="button" data-bs-toggle="modal" data-bs-target="#productImagePopup">Edit</button>*@
 @*@{
         foreach (var item in Model)
         {
             Html.RenderAction("Product_CategorySliderPartial", new { catId = item.CategoryId, catDesc = item.CategoryDesc });
         }
     }*@
+
+@* Product Card Display *@
 <div class="container mx-auto mt-4 mb-5">
-    <div class="row g-3">
-        @{
-            for (int i = 0; i < Model.Count; i++)
-            {
-                string active = (i == 0) ? "active" : "";
-
-                // Product Item
-                MstProduct item = Model[i];
-
-                if (item == null) { continue; }
-
-                MstProductImage img = (item.GetImageList().Count == 0) ? null : item.GetImageList().OrderBy(l => l.ImageOrder).ToList()[0];
-                string imgLink = (img != null) ? String.Concat(directory, img.FileLocation) : "";
-                string desc = (img != null) ? img.ImageDesc : "Image not found";
-                decimal price = Decimal.Round(item.Price.Value, 2);
-
-
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <!-- Card Reference: https://bootstrapious.com/p/bootstrap-cards-->
-                    <div class="card rounded shadow-sm border-0">
-                        <div class="card-body p-4">
-                            <img src="@imgLink" alt="@desc" class="product-card-img img-fluid d-block mx-auto mb-3">
-                            <h5> <a href='@Url.Action("Product_Single", new { productId = item.ProductId })' class="text-dark">@item.ProductName</a></h5>
-                            <p class="small text-muted font-italic">@item.ProductDesc.</p>
-                            <p class="small text-muted font-italic">RM @price</p>
-                            <ul class="list-inline small">
-
-                                @{
-                                    for (int k = 0; k < (int)item.Rating; k++)
-                                    {
-                                        <li class="list-inline-item m-0"><i class="bi bi-star-fill text-success"></i></li>
-                                    }
-
-                                    if (item.Rating.ToString().Contains(".5"))
-                                    {
-                                        <li class="list-inline-item m-0"><i class="bi bi-star-half text-success"></i></li>
-                                    }
-
-                                    decimal starsLeft = (5 - item.Rating.Value);
-                                    for (int k = 0; k < (int)starsLeft; k++)
-                                    {
-                                        <li class="list-inline-item m-0"><i class="bi bi-star text-success"></i></li>
-                                    }
-                                }
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            }
-
-        }
+    <div id="productCardDiv" class="row g-3">
+        @{Html.RenderAction("ProductCard_Partial"); }
     </div>
+</div>
+
+@* Product Filter Popup *@
+<div id="productFilterDiv">
+    @{
+        Html.RenderAction("ProductFilter_Partial");
+    }
 </div>

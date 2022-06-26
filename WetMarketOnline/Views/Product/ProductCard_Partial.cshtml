@@ -1,0 +1,61 @@
+﻿@using EWM.Models
+
+@{
+    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+
+    if (Model.Count == 0)
+    {
+        <b>No Items Found</b>
+    }
+}
+@{
+    for (int i = 0; i < Model.Count; i++)
+    {
+        string active = (i == 0) ? "active" : "";
+
+        // Product Item
+        MstProduct item = Model[i];
+
+        if (item == null) { continue; }
+
+        MstProductImage img = (item.GetImageList().Count <= 0) ? null : item.GetImageList().OrderBy(l => l.ImageOrder).ToList()[0];
+        string imgLink = (img != null) ? String.Concat(directory, img.FileLocation) : "";
+        string desc = (img != null) ? img.ImageDesc : "Image not found";
+        decimal price = Decimal.Round(item.Price.Value, 2);
+
+
+        <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+            <!-- Card Reference: https://bootstrapious.com/p/bootstrap-cards-->
+            <div class="card rounded shadow-sm border-0">
+                <div class="card-body p-4">
+                    <img src="@imgLink" alt="@desc" class="product-card-img img-fluid d-block mx-auto mb-3">
+                    <h5> <a href='@Url.Action("ProductSingle", new { productId = item.ProductId })' class="text-dark">@item.ProductName</a></h5>
+                    <p class="small text-muted font-italic">@item.ProductDesc.</p>
+                    <p class="small text-muted font-italic">RM @price</p>
+                    <ul class="list-inline small">
+
+                        @{
+                            for (int k = 0; k < (int)item.Rating; k++)
+                            {
+                                <li class="list-inline-item m-0"><i class="bi bi-star-fill text-success"></i></li>
+                            }
+
+                            if (item.Rating.ToString().Contains(".5"))
+                            {
+                                <li class="list-inline-item m-0"><i class="bi bi-star-half text-success"></i></li>
+                            }
+
+                            decimal starsLeft = (5 - item.Rating.Value);
+                            for (int k = 0; k < (int)starsLeft; k++)
+                            {
+                                <li class="list-inline-item m-0"><i class="bi bi-star text-success"></i></li>
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+
+}

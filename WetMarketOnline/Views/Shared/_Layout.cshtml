@@ -1,5 +1,11 @@
 ﻿@using EWM.Models
+@{
 
+    string accountType = (Session["AccountType"] == null) ? "" : Session["AccountType"].ToString();
+    string accObjType = "Mst" + accountType;
+    string userHome = (accountType == "Admin" || accountType == "Merchant") ? "Manage" : "Profile";
+
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,43 +35,64 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarUserOptions">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("About", "Home")">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("ProductAll", "Product")">Product</a>
-                    </li>
                     @{
-                        if (Session["AccountType"] != null && Session["Account"] != null)
+
+                        if (accountType == "Admin")
                         {
-                            string accountType = Session["AccountType"].ToString();
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ManageHomeSlider", "MstHomeSlider")">Manage Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ManagePromotion", "MstPromotion")">Manage Promotion</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ManageCategory", "MstCategory")">Manage Categories</a>
+                            </li>
+                        }
+                        else if (accountType == "Merchant")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ManageProduct", "MstMerchant")">Manage Products</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("About", "Home")">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ProductAll", "Product")">Product</a>
+                            </li>
+                        }
+                    }
+                    @{
+                        //switch (accountType.ToLower())
+                        //{
+                        //    case "customer":
+                        //        MstCustomer customer = (MstCustomer)Session["Account"];
+                        //        accName = customer.Username;
+                        //        break;
+                        //    case "merchant":
+                        //        MstMerchant merchant = (MstMerchant)Session["Account"];
+                        //        accName = merchant.Username;
+                        //        break;
+                        //    case "admin":
+                        //        MstAdmin admin = (MstAdmin)Session["Account"];
+                        //        accName = admin.Username;
+                        //        break;
+                        //}
 
-                            string accObjType = "Mst" + accountType;
-                            //switch (accountType.ToLower())
-                            //{
-                            //    case "customer":
-                            //        MstCustomer customer = (MstCustomer)Session["Account"];
-                            //        accName = customer.Username;
-                            //        break;
-                            //    case "merchant":
-                            //        MstMerchant merchant = (MstMerchant)Session["Account"];
-                            //        accName = merchant.Username;
-                            //        break;
-                            //    case "admin":
-                            //        MstAdmin admin = (MstAdmin)Session["Account"];
-                            //        accName = admin.Username;
-                            //        break;
-                            //}
-
+                        if (!string.IsNullOrEmpty(accountType))
+                        {
                             <li class="nav-item dropdown dropstart">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownMenuLink">
-                                    <li class="dropdown-item"><a class="nav-link" href="@Url.Action(accObjType, accObjType)">Profile</a></li>
+                                    <li class="dropdown-item"><a class="nav-link" href="@Url.Action(accObjType, accObjType)">@userHome</a></li>
                                     <li class="dropdown-item"><a class="nav-link" href="@Url.Action("Logout", "Account")">Logout</a></li>
                                 </ul>
                             </li>
@@ -147,8 +174,8 @@
     @Scripts.Render("~/bundles/jquery")
     <script src="~/Scripts/bootstrap.min.js"></script>
     @*@Scripts.Render("~/bundles/bootstrap")
-    @Styles.Render("~/Content/css")
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">*@
+        @Styles.Render("~/Content/css")
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

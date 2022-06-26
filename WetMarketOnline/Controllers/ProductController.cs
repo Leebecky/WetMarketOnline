@@ -1,6 +1,7 @@
 ﻿using EWM.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,26 +14,44 @@ namespace EWM.Controllers
         public ActionResult ProductAll(string section = "")
         {
             string sectionUrl = "#" + section;
-            //MstCategory cat1 = new MstCategory()
-            //{
-            //    CatLevel = 1
-            //};
-            //List<MstCategory> catList = cat1.SelectMstCategory("All");
-
-            //if (section != "")
-            //{
-            //    return new RedirectResult(Url.Action("Product_All") + sectionUrl);
-            //}
             List<MstProduct> pList = MstProduct.GetAllCompleteProductData("Active");
+
+            MstCategory cat1 = new MstCategory()
+            {
+                CatLevel = 1
+            };
+            List<MstCategory> catList = cat1.SelectMstCategory("All");
+            ViewData["MaxCat"] = MstCategory.GetMaxCat();
+            ViewData["CatList"] = catList;
             return View(pList);
         }
 
-        // Carousel Sliders - Category 1
-        public ActionResult Product_CategorySliderPartial(string catId, string catDesc)
+        public ActionResult ProductCard_Partial(string selectedCategories = "")
         {
-            List<MstProduct> pList = GetProductByCategory(catId);
-            ViewData["CatDesc"] = catDesc;
-            return PartialView(pList);
+
+            List<MstProduct> productList = MstProduct.GetAllCompleteProductData("Active");
+
+            if (!string.IsNullOrEmpty(selectedCategories))
+            {
+                string[] catList = (string[])Newtonsoft.Json.JsonConvert.DeserializeObject(selectedCategories, typeof(string[]));
+                
+                productList = MstProduct.GetProductByCategory(catList);
+            }
+
+            return PartialView(productList);
+        }
+
+        // Product Filters
+        public ActionResult ProductFilter_Partial()
+        {
+            MstCategory cat1 = new MstCategory()
+            {
+                CatLevel = 1
+            };
+            List<MstCategory> catList = cat1.SelectMstCategory("All");
+
+            ViewData["MaxCat"] = MstCategory.GetMaxCat();
+            return PartialView(catList);
         }
 
         // Single Product Item display
@@ -52,6 +71,36 @@ namespace EWM.Controllers
         }
 
 
+        //? AJAX call for Parent Cat dropdown
+        public ActionResult GetParentCat_Cb(int catLevel = 1, string parentId = "", string selectedData = "")
+        {
+            MstCategory catSearch = new MstCategory();
+            catSearch.CatLevel = catLevel;
+            catSearch.ParentCatId = parentId;
+            List<MstCategory> parentList = catSearch.SelectMstCategory("All");
+            List<SelectListItem> selectionList = new List<SelectListItem>();
+
+            for (int i = 0; i < parentList.Count; i++)
+            {
+                MstCategory item = parentList[i];
+                SelectListItem selectionItem = new SelectListItem();
+                selectionItem.Text = item.CategoryCode;
+                selectionItem.Value = item.CategoryId;
+
+                //if (pageMode == "New" && i == 0 && catLevel == 1)
+                //{
+                //    selectionItem.Selected = true;
+                //}
+
+                if (selectedData == item.CategoryId)
+                {
+                    selectionItem.Selected = true;
+                }
+                selectionList.Add(selectionItem);
+            }
+
+            return Json(selectionList);
+        }
 
         //end class
     }

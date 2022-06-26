@@ -200,7 +200,7 @@ namespace EWM.Models
             {
                 MstProductImage productImg = new MstProductImage
                 {
-                    ProductId = this.ProductId        
+                    ProductId = this.ProductId
                 };
 
                 if (status != "")
@@ -224,9 +224,45 @@ namespace EWM.Models
             for (int i = 0; i < allProducts.Count; i++)
             {
                 allProducts[i] = GetCompleteProductData(allProducts[i].ProductId, status);
-            }                      
+            }
 
             return allProducts;
+        }
+
+        //? Retrieves products by categories 
+        public static List<MstProduct> GetProductByCategory(String[] catIdList)
+        {
+
+            List<MstProduct> productList = new List<MstProduct>();
+            List<MstProduct> filteredList = new List<MstProduct>();
+
+            string sql = "Select * from mst_product p Inner Join mst_product_category pc on p.product_id = pc.product_id and pc.cat_id = @catId";
+            SqlCommand cmd = new SqlCommand(sql);
+            cmd.Parameters.AddWithValue("@catId", catIdList[0]);
+
+            productList = (List<MstProduct>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+
+            for (int i = 0; i < productList.Count; i++)
+            {
+                productList[i] = MstProduct.GetCompleteProductData(productList[i].ProductId);
+            }
+
+            for (int i = 1; i < catIdList.Length; i++)
+            {
+                for (int k = 0; k < productList.Count; k++)
+                {
+                    if (productList[k].GetCatList().Find(l => l.CategoryId == catIdList[i]) == null)
+                    {
+                        continue;
+                    }
+
+                    if (!filteredList.Contains(productList[k]))
+                    {
+                        filteredList.Add(productList[k]);
+                    }
+                }
+            }
+            return filteredList;
         }
         #endregion        
     }
