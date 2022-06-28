@@ -123,6 +123,7 @@
     <Compile Include="Controllers\MstCategoryController.cs" />
     <Compile Include="Controllers\MstPromotionController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -351,6 +352,7 @@
     <Content Include="Views\Product\ProductAll.cshtml" />
     <Content Include="Views\Product\ProductSingle.cshtml" />
     <Content Include="Views\Product\ProductFilter_Partial.cshtml" />
+    <Content Include="Views\ShoppingCart\ShoppingCart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

@@ -50,6 +50,8 @@ namespace EWM.Controllers
                     if (rowsAffected == 1)
                     {
                         customerAcc = customerAcc.SelectMstCustomer("All")[0];
+                        TxnShoppingCart cart = TxnShoppingCart.GetTxnShoppingCartItems(customerAcc.CustomerId);
+                        Session["ShoppingCart"] = cart.GetCartItems().Count;
                         Session["Account"] = customerAcc;
                         loginValid = true;
                     }

@@ -135,7 +135,7 @@ namespace EWM.Models
             return rowsAffected;
         }
 
-        //? Insert new record
+        //? Select from Database
         public List<MstProduct> SelectMstProduct(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
@@ -247,20 +247,26 @@ namespace EWM.Models
                 productList[i] = MstProduct.GetCompleteProductData(productList[i].ProductId);
             }
 
-            for (int i = 1; i < catIdList.Length; i++)
+            if (catIdList.Length > 1)
             {
-                for (int k = 0; k < productList.Count; k++)
+                for (int i = 1; i < catIdList.Length; i++)
                 {
-                    if (productList[k].GetCatList().Find(l => l.CategoryId == catIdList[i]) == null)
+                    for (int k = 0; k < productList.Count; k++)
                     {
-                        continue;
-                    }
+                        if (productList[k].GetCatList().Find(l => l.CategoryId == catIdList[i]) == null)
+                        {
+                            continue;
+                        }
 
-                    if (!filteredList.Contains(productList[k]))
-                    {
-                        filteredList.Add(productList[k]);
+                        if (!filteredList.Contains(productList[k]))
+                        {
+                            filteredList.Add(productList[k]);
+                        }
                     }
                 }
+            } else
+            {
+                filteredList = productList;
             }
             return filteredList;
         }
