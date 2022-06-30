@@ -122,6 +122,7 @@ namespace EWM.Controllers
         {
             Session.Remove("Account");
             Session.Remove("AccountType");
+            Session.Remove("ShoppingCart");
             return RedirectToAction("Login");
         }
 

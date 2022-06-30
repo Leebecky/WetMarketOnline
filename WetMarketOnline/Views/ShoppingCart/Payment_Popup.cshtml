@@ -1,0 +1,55 @@
+﻿<!-- Modal -->
+<div class="modal fade" id="paymentPopup" tabindex="-1" aria-labelledby="paymentPopupLabel" aria-hidiven="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentPopupLabel">Payment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body-->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container p-0">
+                        <div class="card px-4">
+                            <div class="row gx-3">
+                                <div class="col-12">
+                                    <div class="d-flex flex-column">
+                                        <p class="text mb-1">Name on Card</p>
+                                        <input id="cardName" class="form-control mb-3" type="text" placeholder="Name" value="" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex flex-column">
+                                        <p class="text mb-1">Card Number</p>
+                                        <input id="cardNum" class="form-control mb-3" type="text" placeholder="1234 5678 435678" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex flex-column">
+                                        <p class="text mb-1">Expiry</p>
+                                        <input id="cardExpiry" class="form-control mb-3" type="text" placeholder="MM/YYYY" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex flex-column">
+                                        <p class="text mb-1">CVV/CVC</p>
+                                        <input id="cardCvv" class="form-control mb-3 pt-2 " type="password" placeholder="***" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 col-6 pt-3 mt-3 mx-auto">
+                    <button type="button" id="btnPayment" class="btn btn-lg btn-dark"">Pay RM 0.00</button>
+                    @*<button type="button" id="btnPayment" class="btn btn-lg btn-dark" data-bs-dismiss="modal">Pay RM 0.00</button>*@
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

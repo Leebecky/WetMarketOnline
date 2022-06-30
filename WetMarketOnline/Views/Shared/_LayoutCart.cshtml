@@ -1,0 +1,17 @@
+﻿@{
+    int cartNumber = (Session["ShoppingCart"] == null) ? 0 : int.Parse(Session["ShoppingCart"].ToString());
+}
+
+    <a class="nav-link" href="@Url.Action("ShoppingCart", "ShoppingCart")">
+        <i class="bi bi-cart4 position-relative">
+            @{
+                if (cartNumber > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size:10px">
+                        @cartNumber
+                        <span class="visually-hidden">Items in Cart</span>
+                    </span>
+                }
+            }
+        </i>
+    </a>

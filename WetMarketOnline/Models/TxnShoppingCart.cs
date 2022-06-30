@@ -146,7 +146,7 @@ namespace EWM.Models
             return rowsAffected;
         }
 
-        //? Delete existing record
+        //? Remove cart item > refund for product quantity
         public int DeleteTxnShoppingCartItem()
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
@@ -158,6 +158,15 @@ namespace EWM.Models
                 product.Quantity = product.Quantity + this.Quantity;
                 product.UpdateMstProduct();
             }
+
+            return rowsAffected;
+        }
+
+        //? Delete cart item > item is purchased
+        public int PurchaseTxnShoppingCartItem()
+        {
+            SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Delete");
+            int rowsAffected = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd);                       
 
             return rowsAffected;
         }

@@ -1,7 +1,291 @@
-﻿
+﻿@using EWM.Models;
+@*@model List<TxnShoppingCart>*@
 @{
-    ViewBag.Title = "ShoppingCart";
+    ViewBag.Title = "Shopping Cart";
+    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+
 }
 
-<h2>ShoppingCart</h2>
+<script type="text/javascript">
 
+    $(document).ready(() => {
+        calculateCartTotal();
+
+        $("#promoBtn").click(e => {
+            verifyPromotion($("#promotionCode").val())
+        })
+
+        $("#btnPayment").click(e => {
+            // Create Order
+            if (verifyPaymentDetails()) {
+
+                // Submit Form
+                $("#OrderForm").submit();
+            } else {
+                alert("Please fill in all details!");
+            }
+        })
+    });
+
+    function calculateCartTotal() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CalculateCartTotal")',
+            dataType: "json",
+            success: function (result) {
+                //console.log(result)
+                if (isNaN(result)) {
+                    $("#cartItemTotalDisplay").text("RM 0.00");
+                    $("#cartTotal").val((5).toFixed(2))
+                    $("#cartTotalDisplay").text("RM " + (5).toFixed(2))
+                } else {
+                    var discount = parseFloat($("#discount").val());
+                    var shippingFee = parseFloat($("#shippingFee").val());
+
+                    var total = (result + shippingFee - discount).toFixed(2);
+
+                        $("#cartItemTotalDisplay").text("RM " + (result).toFixed(2));
+                    $("#cartTotal").val(total)
+                    $("#cartTotalDisplay").text("RM " + total)
+
+                    $("#btnPayment").text("Pay RM " + total);
+                    }
+                }
+            });
+    }
+
+    function addToShoppingCart(productId) {
+        var itemQuantity = $("#itemValue_" + productId).val();
+        var availableValue = $("#quantity_" + productId).val();
+
+        if (isNaN(itemQuantity)) {
+            alert("Please enter a valid value!");
+        }
+
+        // Update Value
+        var itemValue = parseInt(itemQuantity) + 1;
+
+        // Validation
+        if (availableValue <= 0) {
+            alert("Maximum quantity of items selected!");
+            return;
+        }
+
+        $("#itemValue_" + productId).val(itemValue);
+        $("#quantity_" + productId).val(parseInt(availableValue)-1);
+        updateProductPrice(productId, itemValue);
+
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToShoppingCart")',
+                data: {
+                    productId: productId,
+                    quantity: itemValue
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        calculateCartTotal();
+                    }
+                }
+            });
+    }
+
+    function subtractFromShoppingCart(productId) {
+        var itemQuantity = $("#itemValue_" + productId).val();
+        var availableValue = $("#quantity_" + productId).val();
+
+        if (isNaN(itemQuantity)) {
+            alert("Please enter a valid value!");
+        }
+
+        var itemValue = parseInt(itemQuantity) - 1;
+
+        // Validation
+        if (itemValue <= 0) {
+            alert("At least 1 unit must be selected!");
+            $("#itemValue_" + productId).val(1);
+            return;
+        }
+
+        $("#itemValue_" + productId).val(itemValue);
+        $("#quantity_" + productId).val(parseInt(availableValue) + 1);
+
+        updateProductPrice(productId, itemValue);
+
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubtractFromShoppingCart")',
+                data: {
+                    productId: productId,
+                    quantity: itemValue
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        calculateCartTotal();
+                    }
+                }
+            });
+    }
+
+    function deleteFromShoppingCart(productId) {
+
+        var name = $("#productName_" + productId).text();
+        const isDelete = confirm("Remove " + name + " from cart?");
+
+        if (!isDelete) {
+            return;
+        }
+
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteFromShoppingCart")',
+                data: {
+                    productId: productId
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $('#navCart').load('#navCart #navCart');
+                        $('#shoppingCartDiv').load('@Url.Action("ShoppingCartItems", "ShoppingCart")', function () {
+                            const toast = new bootstrap.Toast($("#cartToast"))
+                            toast.show()
+                            calculateCartTotal();
+                        })
+                    }
+                }
+            });
+    }
+
+    function updateProductPrice(productId, quantity) {
+        var price = $("#price_" + productId).val();
+        var totalPrice = parseFloat(price) * parseInt(quantity);
+
+        $("#totalPrice_"+productId).text("RM " + (Math.round(totalPrice * 100)/100).toFixed(2))
+    }
+
+    function verifyPromotion(promotionCode) {
+
+        if (promotionCode == "" || promotionCode == null) {
+            alert("Please enter a promotion code!");
+            return;
+        }
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckPromotionCode")',
+                data: {
+                    promoCode: promotionCode
+                },
+                dataType: "json",
+             success: function (result) {
+                    if (result.hasOwnProperty("PromotionId")) {
+                        var promoDiscount = Math.round(result.Amount).toFixed(2);
+                        var totalPrice = parseFloat($("#cartTotal").val())
+                        var total = (totalPrice - parseFloat(promoDiscount)).toFixed(2);
+
+                        // Setting values to HTML components
+                        $("#discount").val(promoDiscount)
+                        $("#discountDisplay").text("RM " + promoDiscount)
+
+                        $("#cartTotal").val(total)
+                        $("#cartTotalDisplay").text("RM " + total)
+
+                        $("#btnPayment").text("Pay RM " + total)
+
+                        $("#promotionId").val(result.PromotionId);
+                    } else {
+                        alert(result);
+                    }
+                }
+            });
+    }
+
+
+    // Verify Payment Details
+    function verifyPaymentDetails() {
+
+        if ($("#cardName").val() == "" || $("#cardName").val == null) { return false; }
+        if ($("#cardNum").val() == "" || $("#cardNum").val == null) { return false; }
+        if ($("#cardExpiry").val() == "" || $("#cardExpiry").val == null) { return false; }
+        if ($("#cardCvv").val() == "" || $("#cardCvv").val == null) { return false; }
+        return true;
+    }
+
+</script>
+
+<div class="cart-card mb-5">
+    <div class="row">
+        <div id="shoppingCartDiv" class="col-md-9 cart">
+
+            @{ Html.RenderAction("ShoppingCartItems"); }
+
+            @*<div class="back-to-shop"><a href="#">&leftarrow;</a><span class="text-muted">Back to shop</span></div>*@
+        </div>
+        <div class="col-md-3 summary">
+            <div><h5><b>Summary</b></h5></div>
+            <hr>
+            @using (Html.BeginForm("CreateOrder", "ShoppingCart", FormMethod.Post, new { @id = "OrderForm" }))
+            {
+                <div class="row">
+                    <div class="col">Items:</div>
+                    <div id="cartItemTotalDisplay" class="col text-right">RM 0.00</div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">Shipping Fee:</div>
+                    <input type="hidden" name="shippingFee" id="shippingFee" value="5.00" readonly>
+                    <div id="shippingFeeDisplay" class="col text-right">RM 5.00</div>
+                </div>
+                @*<select><option class="text-muted">Standard-Delivery- &euro;5.00</option></select>*@
+                <p class="mb-1" style="padding: 2vh 0;">Promotion Code: </p>
+                <div class="input-group mb-3">
+                    <input id="promotionCode" placeholder="Enter promotion code" type="text" class="form-control cart-quantity-val" value="" aria-label="Enter promotion code">
+                    <input id="promotionId" name="promotionId" type="hidden" readonly>
+                    <button type="button" class="btn btn-outline-dark" id="promoBtn"><i class="bi bi-arrow-right-circle"></i></button>
+                </div>
+                <div class="row pb-3">
+                    <div class="col">Discount :</div>
+                    <input type="hidden" id="discount" name="discount" value="0.00" readonly>
+                    <div id="discountDisplay" class="col text-right">RM 0.00</div>
+                </div>
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">Total Price:</div>
+                    <input type="hidden" id="cartTotal" name="cartTotal" value="0.00" readonly>
+                    <div id="cartTotalDisplay" class="col text-right">RM 0.00</div>
+                </div>
+            }
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-lg btn-dark text-white btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#paymentPopup">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@* Toast *@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+    <div id="cartToast" class="toast align-items-center bg-dark border-1 border-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body text-white">
+                Item removed from cart.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+
+@* Payment Popup *@
+<div id="paymentPopupDiv">
+    @{
+        Html.RenderPartial("Payment_Popup");
+    }
+</div>

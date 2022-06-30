@@ -353,6 +353,9 @@
     <Content Include="Views\Product\ProductSingle.cshtml" />
     <Content Include="Views\Product\ProductFilter_Partial.cshtml" />
     <Content Include="Views\ShoppingCart\ShoppingCart.cshtml" />
+    <Content Include="Views\ShoppingCart\ShoppingCartItems.cshtml" />
+    <Content Include="Views\Shared\_LayoutCart.cshtml" />
+    <Content Include="Views\ShoppingCart\Payment_Popup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

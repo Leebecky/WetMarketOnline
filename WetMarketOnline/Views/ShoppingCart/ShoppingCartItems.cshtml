@@ -1,0 +1,66 @@
+﻿@using EWM.Models;
+@model List<TxnShoppingCart>
+@{
+    ViewBag.Title = "Shopping Cart";
+    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+
+}
+
+<div class="title">
+    <div class="row">
+        <div class="col"><h4><b>Shopping Cart</b></h4></div>
+        <div class="col-3 text-end text-muted">@Model.Count items</div>
+    </div>
+</div>
+
+@{
+
+    if (Model.Count == 0)
+    {
+        <br />
+        <b>Cart is Empty</b>
+    }
+
+    foreach (var item in Model)
+    {
+        MstProduct productItem = item.GetProductItem();
+
+        MstProductImage img = (productItem.GetImageList().Count <= 0) ? null : productItem.GetImageList().OrderBy(l => l.ImageOrder).ToList()[0];
+        string imgLink = (img != null) ? String.Concat(directory, img.FileLocation) : "";
+        string desc = (img != null) ? img.ImageDesc : "Image not available";
+        decimal price = Decimal.Round(productItem.Price.Value, 2);
+        decimal totalPrice = Decimal.Round(price * item.Quantity, 2);
+
+        <div class="row main align-items-center">
+            <div class="col-2"><img class="cart-img img-fluid" src="@imgLink" alt="@desc"></div>
+            <div class="col-md-5 col-sm-3">
+                <div class="row lead"><strong id="productName_@productItem.ProductId">@productItem.ProductName</strong></div>
+                <div class="row text-muted"><p>@productItem.ProductDesc</p></div>
+                <div class="row text-muted">
+                    <input id="quantity_@productItem.ProductId" type="hidden" value="@productItem.Quantity" readonly>
+                    <input id="price_@productItem.ProductId" type="hidden" value="@productItem.Price" readonly>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4">
+                <div class="input-group mb-3">
+                    <button class="btn btn-outline-dark cart-quantity-btn" type="button" id="subItem" onclick="subtractFromShoppingCart('@productItem.ProductId')"><i class="bi bi-dash"></i></button>
+                    <input id="itemValue_@productItem.ProductId" type="text" class="form-control text-center cart-quantity-val" value="@item.Quantity" aria-label="@item.Quantity" readonly>
+                    <button class="btn btn-outline-dark cart-quantity-btn" type="button" id="addItem" onclick="addToShoppingCart('@productItem.ProductId')"><i class="bi bi-plus"></i></button>
+                </div>
+            </div>
+            <div class="col-2 position-relative text-center">
+                <span id="totalPrice_@productItem.ProductId">
+                    RM @totalPrice
+                </span>
+                <br />
+                <span class="text-muted">
+                    <small>
+                        (RM @price)
+                    </small>
+                </span>
+                <button class="btn btn-outline-dark btn-sm position-absolute border-0 top-50 start-100 translate-middle" onclick="deleteFromShoppingCart('@productItem.ProductId')"><i class="bi bi-trash3-fill text-danger remove-cart-item "></i></button>
+            </div>
+        </div>
+    }
+}
+
