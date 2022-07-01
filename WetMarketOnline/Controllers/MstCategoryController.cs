@@ -144,6 +144,24 @@ namespace EWM.Controllers
 
             return Json(selectionList);
         }
+
+        //? AJAX Check Categpry Code Validity
+        public ActionResult ValidateCategpry(string catCode)
+        {
+            MstCategory cat = new MstCategory();
+            cat.CategoryCode = catCode;
+            int count = cat.CheckMstCategory();
+
+            if (count > 0)
+            {
+                return Json("Category Code is in use!");
+            }
+            else
+            {
+                return Json("Ok");
+            }
+        }
+
         //end class
     }
 }

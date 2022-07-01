@@ -29,28 +29,74 @@
             var value = parseInt($("#itemValue").val());
             value -= 1;
 
-            if (value < 0) { value = 0; }
+            if (value <= 0) { value = 1; }
             $("#itemValue").val(value);
         })
 
         $("#itemValue").change(e => {
             var value = parseInt($("#itemValue").val());
-            if (value < 0) { value = 0; }
-                $("#itemValue").val(0);
 
-            if (value > @maxValue) {
+            if (isNaN($("#itemValue").val())) {
+                $("#itemValue").val(1);
+            } else if (value <= 0) {
+                $("#itemValue").val(1);
+            } else if (value > @maxValue) {
                 $("#itemValue").val(@maxValue);
             }
-    });
-    });
 
+        });
+
+        $("#btnShoppingCart").click(e => {
+            addToShoppingCart();
+        })
+
+        //$("#cartToastBtn").click(e => {
+        //    //const toast = new bootstrap.Toast($("#cartToast"))
+        //    //toast.show()
+        //        //const toast = new bootstrap.Toast($("#cartToast"))
+        //        //toast.show()
+        //    $('#ewmNavbar').load('#ewmNavbar', function () {
+        //        const toast = new bootstrap.Toast($("#cartToast"))
+        //        toast.show()
+        //    })
+        //})
+
+
+    });
 
     function changeImage(element) {
 
-        var main_prodcut_image = document.getElementById('main_product_image');
-        main_prodcut_image.src = element.src;
+        var mainImage = document.getElementById('mainImage');
+        mainImage.src = element.src;
     }
 
+    function addToShoppingCart() {
+        var itemValue = parseInt($("#itemValue").val());
+
+        if (isNaN(itemValue)) {
+            alert("Please enter a valid value!");
+        }
+
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToShoppingCart")',
+                data: {
+                    productId: '@Model.ProductId',
+                    quantity: itemValue
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $('#navCart').load('#navCart #navCart', function () {
+                            const toast = new bootstrap.Toast($("#cartToast"))
+                            toast.show()
+                        })
+                    }
+                }
+            });
+    }
 
 </script>
 
@@ -68,7 +114,7 @@
                             string displayLink = (displayImg != null) ? String.Concat(directory, displayImg.FileLocation) : "";
                             string displayDesc = (displayImg != null) ? displayImg.ImageDesc : "";
                         }
-                        <img src="@displayLink" alt="@displayDesc" id="main_product_image" width="350">
+                        <img src="@displayLink" alt="@displayDesc" id="mainImage" width="350">
 
                     </div>
                     <div class="thumbnail_images">
@@ -97,7 +143,7 @@
                         <h3>@Model.ProductName</h3>
 
                     </div>
-                    <div class="mt-2 pr-3 content">
+                    <div class="mt-2 pr-3">
                         <p>@Model.ProductDesc</p>
                     </div>
                     <h3>RM @Decimal.Round(Model.Price.Value, 2)</h3>
@@ -123,20 +169,49 @@
                         </div>
                         <span>0 reviews</span>
                     </div>
+                    <div class="mt-2 pr-3 content">
+                        <p>@Model.GetMerchantName()</p>
+                    </div>
 
                     <div class="buttons d-flex flex-row mt-5 gap-3">
                         <button class="btn btn-outline-dark" id="subItem"><i class="bi bi-dash"></i></button>
-                        <input class="form-control" id="itemValue" type="text" value="0" aria-label="0">
+                        <input class="form-control" id="itemValue" type="text" value="1" aria-label="1">
                         <button class="btn btn-outline-dark" id="addItem"><i class="bi bi-plus"></i></button>
                         @*<button class="btn btn-dark">Add to Basket</button>*@
                     </div>
 
+                    @* Add to Cart *@
                     <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button class="btn btn-outline-dark">Add to Cart</button>
+                        @{
+                            if (maxValue <= 0)
+                            {
+                                <button class="btn btn-dark disabled">Add to Cart</button>
+                                <p class="text-danger">This item is currently not available</p>
+                            }
+                            else
+                            {
+                                <button id="btnShoppingCart" class="btn btn-outline-dark">Add to Cart</button>
+                            }
+                        }
                         @*<button class="btn btn-dark">Add to Basket</button>*@
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+@*<button type="button" class="btn btn-primary" id="cartToastBtn">Show live toast</button>*@
+
+@* Toast *@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+    <div id="cartToast" class="toast align-items-center bg-dark border-1 border-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body text-white">
+                Item has been added to cart.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
 </div>

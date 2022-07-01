@@ -29,7 +29,23 @@
                     $("#btnFile").text("Upload File");
                 }
             });
+
+        $("#btnSubmit").click(e => {
+            if (validateData()) {
+                $("#HomeSliderForm").submit();
+            } else {
+                alert("Please fill in all required fields!");
+            }
+        })
     });
+
+    function validateData() {
+        if ($("#Filename").val() == "" || $("#Filename").val() == null) { return false; }
+        if ($("#ImageDesc").val() == "" || $("#ImageDesc").val() == null) { return false; }
+        if ($("#FormFileUpload").val() == "" || $("#FormFileUpload").val() == null) { return false; }
+        return true;
+    }
+
 </script>
 
 <h2>@Model.Filename</h2>
@@ -60,7 +76,7 @@
                 }
                 else
                 {
-                    @Html.TextBoxFor(model => model.Filename, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Filename, new { @class = "form-control", @required = "true" })
                 }
             }
         </dd>
@@ -78,7 +94,7 @@
                 }
                 else
                 {
-                    @Html.TextBoxFor(model => model.ImageDesc, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.ImageDesc, new { @class = "form-control", @required = "true" })
                 }
             }
         </dd>
@@ -176,7 +192,7 @@
     @{
         if (pageMode != "Details")
         {
-            <button class="btn btn-success px-4" type="submit" form="HomeSliderForm">Submit</button>
+            <button class="btn btn-success px-4" id="btnSubmit" type="button" form="HomeSliderForm">Submit</button>
         }
     }
 

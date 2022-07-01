@@ -37,6 +37,7 @@ namespace EWM.Models
         private List<MstProductImage> ImageList { get; set; }
         private List<MstProductReview> ReviewList { get; set; }
         private List<MstProductReviewImage> ReviewImageList { get; set; }
+        private string MerchantName { get; set; }
 
         // Original Data
         private string OriProductId { get; set; }
@@ -94,6 +95,10 @@ namespace EWM.Models
             return ReviewImageList;
         }
 
+        public string GetMerchantName()
+        {
+            return MerchantName;
+        }
         #endregion
 
         #region Methods
@@ -135,7 +140,7 @@ namespace EWM.Models
             return rowsAffected;
         }
 
-        //? Insert new record
+        //? Select from Database
         public List<MstProduct> SelectMstProduct(string filterType = "Column")
         {
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, this, "Select", filterType);
@@ -164,7 +169,21 @@ namespace EWM.Models
             MstProduct product = GetMstProduct(productId);
             product.CatList = product.GetMstProductCategoryData();
             product.ImageList = product.GetMstProductImageData(imgStatus);
+            product.MerchantName = product.GetMerchantNameData();
             return product;
+        }
+        
+        //? Retrieve the Merchant Name
+        public string GetMerchantNameData()
+        {
+            MstMerchant merchant = MstMerchant.GetMstMerchant(this.MerchantId);
+            if (merchant != null)
+            {
+                return merchant.Username;
+            } else
+            {
+                return "";
+            }
         }
 
         //? Retrieves the Product Category Data
@@ -247,20 +266,26 @@ namespace EWM.Models
                 productList[i] = MstProduct.GetCompleteProductData(productList[i].ProductId);
             }
 
-            for (int i = 1; i < catIdList.Length; i++)
+            if (catIdList.Length > 1)
             {
-                for (int k = 0; k < productList.Count; k++)
+                for (int i = 1; i < catIdList.Length; i++)
                 {
-                    if (productList[k].GetCatList().Find(l => l.CategoryId == catIdList[i]) == null)
+                    for (int k = 0; k < productList.Count; k++)
                     {
-                        continue;
-                    }
+                        if (productList[k].GetCatList().Find(l => l.CategoryId == catIdList[i]) == null)
+                        {
+                            continue;
+                        }
 
-                    if (!filteredList.Contains(productList[k]))
-                    {
-                        filteredList.Add(productList[k]);
+                        if (!filteredList.Contains(productList[k]))
+                        {
+                            filteredList.Add(productList[k]);
+                        }
                     }
                 }
+            } else
+            {
+                filteredList = productList;
             }
             return filteredList;
         }

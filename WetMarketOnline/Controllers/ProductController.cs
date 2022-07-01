@@ -1,4 +1,5 @@
-﻿using EWM.Models;
+﻿using EWM.HelperClass;
+using EWM.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -13,8 +14,7 @@ namespace EWM.Controllers
         // GET: Product
         public ActionResult ProductAll(string section = "")
         {
-            string sectionUrl = "#" + section;
-            List<MstProduct> pList = MstProduct.GetAllCompleteProductData("Active");
+            //List<MstProduct> pList = MstProduct.GetAllCompleteProductData("Active");
 
             MstCategory cat1 = new MstCategory()
             {
@@ -23,18 +23,35 @@ namespace EWM.Controllers
             List<MstCategory> catList = cat1.SelectMstCategory("All");
             ViewData["MaxCat"] = MstCategory.GetMaxCat();
             ViewData["CatList"] = catList;
-            return View(pList);
+            TempData["HomeFilter"] = section;
+            return View();
         }
 
         public ActionResult ProductCard_Partial(string selectedCategories = "")
         {
-
             List<MstProduct> productList = MstProduct.GetAllCompleteProductData("Active");
+
+            if (!string.IsNullOrEmpty(TempData["HomeFilter"].ToString()))
+            {
+                MstCategory cat = new MstCategory()
+                {
+                    CatLevel = 1,
+                    CategoryDesc = TempData["HomeFilter"].ToString()
+                };
+                List<MstCategory> catList = cat.SelectMstCategory("All");
+
+                if (catList.Count > 0)
+                {
+                    string[] catArr = { catList[0].CategoryId };
+                    productList = MstProduct.GetProductByCategory(catArr);
+                }
+
+            }
 
             if (!string.IsNullOrEmpty(selectedCategories))
             {
                 string[] catList = (string[])Newtonsoft.Json.JsonConvert.DeserializeObject(selectedCategories, typeof(string[]));
-                
+
                 productList = MstProduct.GetProductByCategory(catList);
             }
 
@@ -48,8 +65,8 @@ namespace EWM.Controllers
             {
                 CatLevel = 1
             };
-            List<MstCategory> catList = cat1.SelectMstCategory("All");
 
+            List<MstCategory> catList = cat1.SelectMstCategory("All");
             ViewData["MaxCat"] = MstCategory.GetMaxCat();
             return PartialView(catList);
         }
@@ -57,6 +74,11 @@ namespace EWM.Controllers
         // Single Product Item display
         public ActionResult ProductSingle(string productId)
         {
+            if (string.IsNullOrEmpty(productId))
+            {
+                return RedirectToAction("ProductAll");
+            }
+
             MstProduct product = MstProduct.GetCompleteProductData(productId, "Active");
             return View(product);
         }
@@ -100,6 +122,40 @@ namespace EWM.Controllers
             }
 
             return Json(selectionList);
+        }
+
+        //? AJAX - Add items to shopping cart
+        public ActionResult AddToShoppingCart(string productId, string quantity)
+        {
+            // get item id > update quantity
+            // update nav header
+
+            // Validating that customer is logged in
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Customer")) { return Json("Please login first!"); }
+            MstCustomer user = (MstCustomer)Session["Account"];
+
+            TxnShoppingCart cart = TxnShoppingCart.GetTxnShoppingCartItems(user.CustomerId);
+
+            TxnShoppingCart cartItem = cart.GetCartItems().Find(l => l.ProductId == productId);
+
+            if (cartItem == null) // if item is not in cart
+            {
+                cartItem = new TxnShoppingCart();
+                cartItem.CustomerId = user.CustomerId;
+                cartItem.ProductId = productId;
+                cartItem.Quantity = int.Parse(quantity);
+                cartItem.CreateTxnShoppingCartItem(user.Username);
+
+            }
+            else //if item is already in cart
+            {
+                cartItem.Quantity = cartItem.Quantity + int.Parse(quantity);
+                cartItem.UpdateTxnShoppingCartItem();
+            }
+
+            Session["ShoppingCart"] = cart.RetrieveCartItemsFromDb().Count;
+
+            return Json("Ok");
         }
 
         //end class

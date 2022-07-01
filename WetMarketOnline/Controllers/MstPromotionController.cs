@@ -91,5 +91,22 @@ namespace EWM.Controllers
                 return View();
             }
         }
+
+        //? AJAX Check Promotion Code Validity
+        public ActionResult ValidatePromotion(string promoCode)
+        {
+            MstPromotion promo = new MstPromotion();
+            promo.PromotionCode = promoCode;
+            int count = promo.CheckMstPromotion();
+
+            if (count > 0)
+            {
+                return Json("Promotion Code is in use!");
+            } else
+            {
+                return Json("Ok");
+            }
+        }
+
     }
 }

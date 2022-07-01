@@ -3,15 +3,22 @@
 @model EWM.Models.MstCategory
 
 @{
-    ViewBag.Title = "EWM - Category Details";
+    ViewBag.Title = "Category Details";
 
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
     List<SelectListItem> parentList = (ViewData["ParentList"] == null) ? new List<SelectListItem>() : (List<SelectListItem>)ViewData["ParentList"];
 }
 <script type="text/javascript">
     $(document).ready(() => {
+        // Set initial value
+        $("#CatLevel").val(1);
+
         $("#CatLevel").change(e => {
-                      
+
+            if ($("#CatLevel").val() == 0) {
+                $("#CatLevel").val(1);
+            }
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetParentCat_Cb")',
@@ -24,12 +31,49 @@
                     $(result).each(function () {
                         $("#ParentCatId").append($("<option></option>").val(this.Value).html(this.Text));
                     });
-                
+
                 }
             });
         });
 
+        $("#btnSubmit").click(e => {
+            if (validateData()) {
+                validateCategory();
+            } else {
+                alert("Please fill in all required fields!")
+            }
+        })
     });
+
+    function validateData() {
+        if ($("#CategpryCode").val() == "" || $("#CategoryCode").val() == null) { return false; }
+        if ($("#CategoryDesc").val() == "" || $("#CategoryDesc").val() == null) { return false; }
+        if ($("#CatLevel").val() == "" || $("#CatLevel").val() == null) { return false; }
+        
+        return true;
+    }
+
+    // Validate Category Code
+    function validateCategory() {
+        var catCode = $("#CategoryCode").val();
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidateCategpry")',
+                data: {
+                    catCode: catCode
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $("#MstCategoryForm").submit();
+                    }
+                }
+            });
+    }
+
 </script>
 
 <h2>@Model.CategoryCode</h2>
@@ -109,7 +153,7 @@
                                 @Html.DisplayFor(model => model.ParentCatId)
                             }
                             else
-                            {                         
+                            {
                                 @Html.DropDownListFor(model => model.ParentCatId, parentList, new { @class = "form-select" })
                             }
                         }
@@ -179,7 +223,7 @@
     @{
         if (pageMode != "Details")
         {
-            <button class="btn btn-success px-4" type="submit" form="MstCategoryForm">Submit</button>
+            <button class="btn btn-success px-4" id="btnSubmit" type="button" form="MstCategoryForm">Submit</button>
         }
     }
 
