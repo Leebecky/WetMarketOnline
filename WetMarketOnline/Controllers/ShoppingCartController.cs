@@ -142,6 +142,7 @@ namespace EWM.Controllers
 
             MstPromotion promo = new MstPromotion();
             promo.PromotionCode = promoCode;
+            promo.Status = "Active";
 
             int valid = promo.CheckMstPromotion();
 

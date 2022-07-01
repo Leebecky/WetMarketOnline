@@ -175,6 +175,11 @@
 
         if (promotionCode == "" || promotionCode == null) {
             alert("Please enter a promotion code!");
+
+            $("#discount").val(0.00)
+            $("#discountDisplay").text("RM 0.00")
+            $("#promotionId").val("");
+            calculateCartTotal();
             return;
         }
 
@@ -191,6 +196,10 @@
                         var totalPrice = parseFloat($("#cartTotal").val())
                         var total = (totalPrice - parseFloat(promoDiscount)).toFixed(2);
 
+                        if (total < 1) {
+                            return alert("Promotion cannot be used! Minimum spend of RM 1.00 required!")
+                        }
+
                         // Setting values to HTML components
                         $("#discount").val(promoDiscount)
                         $("#discountDisplay").text("RM " + promoDiscount)
@@ -203,6 +212,10 @@
                         $("#promotionId").val(result.PromotionId);
                     } else {
                         alert(result);
+                        $("#discount").val(0.00)
+                        $("#discountDisplay").text("RM 0.00")
+                        $("#promotionId").val("");
+                        calculateCartTotal();
                     }
                 }
             });

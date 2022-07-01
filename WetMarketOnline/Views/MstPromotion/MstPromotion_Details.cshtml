@@ -14,23 +14,43 @@
                 format: 'dd/mm/yyyy',
             });
         });
-        //$("#btnFile").click(e => {
-        //    $("#FormFileUpload").click();
-        //});
 
-        //$("#FormFileUpload").change(
-        //    function () {
-        //        if ($(this).val() != "") {
-        //            $("#btnFile").addClass("btn-success");
-        //            $("#btnFile").removeClass("btn-primary");
-        //            $("#btnFile").text("File Uploaded");
-        //        } else {
-        //            $("#btnFile").addClass("btn-primary");
-        //            $("#btnFile").removeClass("btn-success");
-        //            $("#btnFile").text("Upload File");
-        //        }
-        //    });
+        $("#btnSubmit").click(e => {
+            if (!validateData()) {
+                alert("Please fill in all required fields")
+            } else {
+               validatePromotion()
+            }
+        })
     });
+
+    function validateData() {
+        if ($("#PromotionCode").val() == "" || $("#PromotionCode").val() == null) { return false; }
+        if ($("#PromotionDesc").val() == "" || $("#PromotionDesc").val() == null) { return false; }
+        if ($("#Amount").val() == "" || $("#Amount").val() == null) { return false; }
+        return true;
+    }
+
+    // Validate Promotion Code
+    function validatePromotion() {
+        var promoCode = $("#PromotionCode").val();
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidatePromotion")',
+                data: {
+                    promoCode: promoCode
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $("#MstPromotionForm").submit();
+                    }
+                }
+            });
+    }
 </script>
 
 <h2>@Model.PromotionCode</h2>
@@ -91,7 +111,7 @@
                     }
                     else
                     {
-                        @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @type = "number", @step = "0.001" })
+                        @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @type = "number", @step = "0.001", @required = "true" })
                     }
                 }
             </dd>
@@ -163,7 +183,7 @@
                     {
                         @Html.DisplayFor(model => model.Status)
                     }
-                    else                    
+                    else
                     {
                         @Html.DropDownListFor(model => model.Status, new SelectList(Enum.GetValues(typeof(GeneralBLL.Status))), new { @class = "form-select" })
                     }
@@ -215,7 +235,7 @@
     @{
         if (pageMode != "Details")
         {
-            <button class="btn btn-success px-4" type="submit" form="MstPromotionForm">Submit</button>
+            <button id="btnSubmit" class="btn btn-success px-4" type="button" form="MstPromotionForm">Submit</button>
         }
     }
 

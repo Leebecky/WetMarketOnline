@@ -15,9 +15,9 @@ namespace EWM.Models
         public string CustomerId { get; set; }
         public DateTime OrderDate { get; set; }
         public string PromotionId { get; set; }
-        public decimal ShippingFee { get; set; }
-        public decimal Discount { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? ShippingFee { get; set; }
+        public decimal? Discount { get; set; }
+        public decimal? TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

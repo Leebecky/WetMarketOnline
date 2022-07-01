@@ -37,6 +37,7 @@ namespace EWM.Models
         private List<MstProductImage> ImageList { get; set; }
         private List<MstProductReview> ReviewList { get; set; }
         private List<MstProductReviewImage> ReviewImageList { get; set; }
+        private string MerchantName { get; set; }
 
         // Original Data
         private string OriProductId { get; set; }
@@ -94,6 +95,10 @@ namespace EWM.Models
             return ReviewImageList;
         }
 
+        public string GetMerchantName()
+        {
+            return MerchantName;
+        }
         #endregion
 
         #region Methods
@@ -164,7 +169,21 @@ namespace EWM.Models
             MstProduct product = GetMstProduct(productId);
             product.CatList = product.GetMstProductCategoryData();
             product.ImageList = product.GetMstProductImageData(imgStatus);
+            product.MerchantName = product.GetMerchantNameData();
             return product;
+        }
+        
+        //? Retrieve the Merchant Name
+        public string GetMerchantNameData()
+        {
+            MstMerchant merchant = MstMerchant.GetMstMerchant(this.MerchantId);
+            if (merchant != null)
+            {
+                return merchant.Username;
+            } else
+            {
+                return "";
+            }
         }
 
         //? Retrieves the Product Category Data
