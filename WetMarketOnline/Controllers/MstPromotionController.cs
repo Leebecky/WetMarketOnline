@@ -93,18 +93,18 @@ namespace EWM.Controllers
         }
 
         //? AJAX Check Promotion Code Validity
-        public ActionResult ValidatePromotion(string promoCode)
+        public ActionResult ValidatePromotion(string promoCode, string promoId)
         {
             MstPromotion promo = new MstPromotion();
             promo.PromotionCode = promoCode;
-            int count = promo.CheckMstPromotion();
-
-            if (count > 0)
-            {
-                return Json("Promotion Code is in use!");
-            } else
+            List<MstPromotion> promoList = promo.SelectMstPromotion("All");
+           
+            if (promoList.Count == 0 || (promoList.Count == 1 && promoList[0].PromotionId == promoId))
             {
                 return Json("Ok");
+            } else
+            {
+                return Json("Promotion Code is in use!");
             }
         }
 

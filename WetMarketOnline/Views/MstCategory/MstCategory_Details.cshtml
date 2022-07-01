@@ -10,8 +10,10 @@
 }
 <script type="text/javascript">
     $(document).ready(() => {
-        // Set initial value
-        $("#CatLevel").val(1);
+
+        if ($("#CatLevel").val() == "" || $("#CatLevel").val() == null) {
+            $("#CatLevel").val(1);
+        }
 
         $("#CatLevel").change(e => {
 
@@ -56,12 +58,14 @@
     // Validate Category Code
     function validateCategory() {
         var catCode = $("#CategoryCode").val();
+        var catId = $("#CategoryId").val();
 
          $.ajax({
                 type: "POST",
-                url: '@Url.Action("ValidateCategpry")',
+                url: '@Url.Action("ValidateCategory")',
                 data: {
-                    catCode: catCode
+                    catCode: catCode,
+                    catId: catId
                 },
                 dataType: "json",
                 success: function (result) {

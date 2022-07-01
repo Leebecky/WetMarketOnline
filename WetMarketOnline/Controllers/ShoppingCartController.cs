@@ -144,7 +144,7 @@ namespace EWM.Controllers
             promo.PromotionCode = promoCode;
             promo.Status = "Active";
 
-            int valid = promo.CheckMstPromotion();
+            int valid = promo.VerifyPromotion(DateTime.Now.ToString("yyyy-MM-dd"));
 
             if (valid == 1)
             {
