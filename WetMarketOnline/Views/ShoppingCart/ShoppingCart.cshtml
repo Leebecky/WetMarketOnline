@@ -187,7 +187,8 @@
                 type: "POST",
                 url: '@Url.Action("CheckPromotionCode")',
                 data: {
-                    promoCode: promotionCode
+                    promoCode: promotionCode,
+                    promoId: $("#promotionId").val()
                 },
                 dataType: "json",
              success: function (result) {
@@ -212,10 +213,13 @@
                         $("#promotionId").val(result.PromotionId);
                     } else {
                         alert(result);
-                        $("#discount").val(0.00)
-                        $("#discountDisplay").text("RM 0.00")
-                        $("#promotionId").val("");
-                        calculateCartTotal();
+
+                        if (result == "No promotion with that code found!") {
+                            $("#discount").val(0.00)
+                            $("#discountDisplay").text("RM 0.00")
+                            $("#promotionId").val("");
+                            calculateCartTotal();
+                        }
                     }
                 }
             });

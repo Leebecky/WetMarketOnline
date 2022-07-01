@@ -135,10 +135,19 @@ namespace EWM.Controllers
         }
 
         //? AJAX - Verify Promotion Code
-        public ActionResult CheckPromotionCode(string promoCode)
+        public ActionResult CheckPromotionCode(string promoCode, string promoId = "")
         {
             if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Customer")) { return Json("Please login first!"); }
             MstCustomer user = (MstCustomer)Session["Account"];
+
+            if (!string.IsNullOrEmpty(promoId))
+            {
+                MstPromotion mstPromotion = MstPromotion.GetMstPromotion(promoId);
+                if (mstPromotion.PromotionCode == promoCode)
+                {
+                    return Json("Promotion has already been applied!");
+                }
+            }
 
             MstPromotion promo = new MstPromotion();
             promo.PromotionCode = promoCode;
