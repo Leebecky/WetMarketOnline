@@ -3,7 +3,7 @@
 @model EWM.Models.MstPromotion
 
 @{
-    ViewBag.Title = "EWM - Promotion Details";
+    ViewBag.Title = "Promotion Details";
 
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
 }
@@ -33,13 +33,15 @@
 
     // Validate Promotion Code
     function validatePromotion() {
+        var promoId = $("#PromotionId").val();
         var promoCode = $("#PromotionCode").val();
 
          $.ajax({
                 type: "POST",
                 url: '@Url.Action("ValidatePromotion")',
                 data: {
-                    promoCode: promoCode
+                    promoCode: promoCode,
+                    promoId: promoId
                 },
                 dataType: "json",
                 success: function (result) {
@@ -140,8 +142,6 @@
 
                             @Html.TextBoxFor(model => model.StartDate, "{0:dd/MM/yyyy}", new { @class = "form-control bootstrap-datepicker" })
                         </div>
-
-
                     }
                 }
             </dd>

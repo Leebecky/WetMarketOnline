@@ -142,6 +142,20 @@ namespace EWM.Models
             return data;
         }
 
+        //? Verify Promotion Validity
+        public int VerifyPromotion(string date)
+        {
+            string sql = "Select* from mst_promotion where promotion_code = @promoCode AND status = @status AND @date BETWEEN start_date AND end_date";
+            SqlCommand cmd = new SqlCommand(sql);
+            cmd.Parameters.AddWithValue("@promoCode", this.PromotionCode);
+            cmd.Parameters.AddWithValue("@status", this.Status);
+            cmd.Parameters.AddWithValue("@date", date);
+
+            int data = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+
+            return data;
+        }
+
         #endregion
     }
 }

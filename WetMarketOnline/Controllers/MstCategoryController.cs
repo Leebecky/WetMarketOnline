@@ -51,7 +51,7 @@ namespace EWM.Controllers
                 if (catLevel > 1)
                 {
                     MstCategory parent = MstCategory.GetMstCategory(categoryData.ParentCatId);
-                    categoryData.ParentCatId = parent.CategoryCode;
+                    categoryData.ParentCatId = parent.CategoryId;
                 }
                 return View("MstCategory_Details", categoryData);
             }
@@ -146,19 +146,19 @@ namespace EWM.Controllers
         }
 
         //? AJAX Check Categpry Code Validity
-        public ActionResult ValidateCategpry(string catCode)
+        public ActionResult ValidateCategory(string catCode, string catId)
         {
             MstCategory cat = new MstCategory();
             cat.CategoryCode = catCode;
-            int count = cat.CheckMstCategory();
+            List<MstCategory> catList = cat.SelectMstCategory("All");
 
-            if (count > 0)
+            if (catList.Count == 0 || (catList.Count == 1 && catList[0].CategoryId == catId))
             {
-                return Json("Category Code is in use!");
+                return Json("Ok");
             }
             else
             {
-                return Json("Ok");
+                return Json("Category Code is in use!");
             }
         }
 
