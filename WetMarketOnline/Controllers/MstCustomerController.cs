@@ -135,5 +135,24 @@ namespace EWM.Controllers
             }
         }
 
+        ////? Change Password popup
+        //public ActionResult ChangePassword_Customer()
+        //{
+        //    return PartialView();
+        //}
+
+        //? Change customer password
+        [HttpPost]
+        public ActionResult ChangePassword(string password)
+        {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Customer")) { return RedirectToAction("Login", "Account"); }
+            MstCustomer user = (MstCustomer)Session["Account"];
+
+            MstCustomer customer = Models.MstCustomer.GetMstCustomer(user.CustomerId);
+            customer.Password = password;
+            customer.UpdateMstCustomer();
+
+            return RedirectToAction("CustomerProfile");
+        }
     }
 }

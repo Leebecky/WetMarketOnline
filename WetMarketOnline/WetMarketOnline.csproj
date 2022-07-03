@@ -366,6 +366,7 @@
     <Content Include="Views\MstMerchant\OrderCard_MerchantPartial.cshtml" />
     <Content Include="Views\MstMerchant\OrderList_Merchant.cshtml" />
     <Content Include="Views\MstMerchant\OrderTracking_Merchant.cshtml" />
+    <Content Include="Views\MstCustomer\ChangePassword_Customer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

@@ -13,7 +13,55 @@
         $("#btnSubmit").click(e => {
             validateUsername();
         })
+
+        $("#password").focusout(e => {
+            var password = $("#password").val();
+            if (password.length < 8) {
+                $("#passwordValidation").text("Password must have at least 8 characters!");
+            }
+        })
+
+        $("#password").on("input", () => {
+            var password = $("#password").val();
+
+            if (password.length >= 8) {
+                $("#passwordValidation").text("");
+            }
+        })
+
+        $("#btnShowPassword").click(e => {
+            displayPassword("password", "iconShowPassword");
+        })
+
+        $("#btnShowConfirmPassword").click(e => {
+            displayPassword("confirmPassword", "iconShowConfirmPassword");
+        })
+
+        $("#changePasswordBtn").click(e => {
+            if (validatePassword()) {
+                $("#ChangePasswordForm").submit();
+            }
+        })
+
+
     })
+
+    // Show Passsword
+    function displayPassword(fieldName, btnName) {
+        var passwordField = document.getElementById(fieldName);
+        var passwordBtn = $("#" + btnName);
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            passwordBtn.removeClass("bi-eye-fill");
+            passwordBtn.addClass("bi-eye-slash-fill");
+            
+        } else {
+            passwordField.type = "password";
+            passwordBtn.removeClass("bi-eye-slash-fill");
+            passwordBtn.addClass("bi-eye-fill");
+        }
+    }
 
     // Validate Username
     function validateUsername() {
@@ -38,9 +86,29 @@
             });
     }
 
+    // Validate password change
+    function validatePassword() {
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+        
+        if (password.length < 8) {
+            alert("Password must be at least 8 characters");
+            return false;
+        }
+
+        if (password != confirmPassword) {
+            alert("Password and Confirm Password do not match!");
+            return false;
+        }
+        return true;
+    }
+
 </script>
 
 <h2>Customer Profile - Edit</h2>
+<div class="text-end">
+    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordPopup">Change Password</button>
+</div>
 
 <div>
     <hr />
@@ -54,7 +122,7 @@
             </dt>
 
             <dd>
-                @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-control mb-3" })
             </dd>
 
             @*<dt>
@@ -70,7 +138,7 @@
             </dt>
 
             <dd>
-                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control mb-3" })
             </dd>
 
             <dt>
@@ -78,7 +146,7 @@
             </dt>
 
             <dd>
-                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control mb-3" })
             </dd>
 
             <dt>
@@ -86,7 +154,7 @@
             </dt>
 
             <dd>
-                @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Address, new { @class = "form-control mb-3" })
             </dd>
 
             <dt>
@@ -119,7 +187,7 @@
             </dt>
 
             <dd>
-                @Html.TextBoxFor(model => model.Postcode, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Postcode, new { @class = "form-control mb-3" })
             </dd>
             @*@Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" })*@
         </div>
@@ -143,3 +211,6 @@
         }*@
 
 </div>
+
+@* Change Password Popup *@
+@{ Html.RenderPartial("ChangePassword_Customer"); }

@@ -4,6 +4,32 @@
 
 @{ Html.RenderPartial("ForgotPassword"); }
 
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#btnShowPassword").click(e => {
+            displayPassword("Password", "iconShowPassword");
+        })
+    })
+
+    // Show Passsword
+    function displayPassword(fieldName, btnName) {
+        var passwordField = document.getElementById(fieldName);
+        var passwordBtn = $("#" + btnName);
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            passwordBtn.removeClass("bi-eye-fill");
+            passwordBtn.addClass("bi-eye-slash-fill");
+
+        } else {
+            passwordField.type = "password";
+            passwordBtn.removeClass("bi-eye-slash-fill");
+            passwordBtn.addClass("bi-eye-fill");
+        }
+    }
+
+</script>
+
 <h1>Welcome Back</h1>
 <div class="container pt-1 text-center" >
     <p class="text-danger">@ViewBag.Error</p>
@@ -27,7 +53,14 @@
                 <div class="row mb-3">
                     <label for="Password" class="col-lg-4 col-form-label">Password</label>
                     <div class="col-lg-8">
-                        <input type="password" class="form-control" id="Password" name="password" placeholder="Password" required>
+                        @*<input type="password" class="form-control" id="Password" name="password" placeholder="Password" required>*@
+                        
+                        <div class="input-group mb-3">
+                            <input type="password" id="Password" name="password" class="form-control" aria-label="password" required>
+                            <button class="btn btn-outline-dark" type="button" id="btnShowPassword"><i id="iconShowPassword" class="bi bi-eye-fill"></i></button>
+                        </div>
+
+
                         <div id="passwordHelp" class="form-text text-end">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#resetPasswordPopup">Forgot Password?</button>

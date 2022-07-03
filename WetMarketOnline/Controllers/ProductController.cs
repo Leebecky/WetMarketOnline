@@ -30,8 +30,9 @@ namespace EWM.Controllers
         public ActionResult ProductCard_Partial(string selectedCategories = "")
         {
             List<MstProduct> productList = MstProduct.GetAllCompleteProductData("Active");
+            string homeFilter = (TempData["HomeFilter"] == null) ? "" : TempData["HomeFilter"].ToString();
 
-            if (!string.IsNullOrEmpty(TempData["HomeFilter"].ToString()))
+            if (!string.IsNullOrEmpty(homeFilter))
             {
                 MstCategory cat = new MstCategory()
                 {

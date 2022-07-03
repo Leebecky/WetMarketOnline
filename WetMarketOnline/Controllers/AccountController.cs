@@ -4,6 +4,7 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Reflection;
 using System.Web;
@@ -336,23 +337,28 @@ namespace EWM.Controllers
 
                 if (updateSuccess == 1)
                 {
-                    //send mail
-                    MailMessage mail = new MailMessage();
-                    mail.To.Add(resetEmail);
-                    mail.From = new MailAddress("fam.lee2866@gmail.com");
-                    mail.Subject = "EWM - Password Reset";
-                    string Body = $"Your password has been reset to {newPassword}.";
-                    mail.Body = Body;
-                    mail.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new System.Net.NetworkCredential("fam.lee2866@gmail.com", "Photo Storage"); // Enter senders User name and password       
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
 
-                    msg = "Please check your inbox for your new password";
+                    using (MailMessage mail = new MailMessage())
+                    {
+                        mail.From = new MailAddress("ewetmarket@gmail.com");
+                        mail.To.Add(resetEmail);
+                        mail.Subject = "EWM - Password Reset";
+                        mail.Body = $"Your password has been reset to {newPassword}.";
+                        mail.IsBodyHtml = true;
+
+                        using (SmtpClient smtp = new SmtpClient())
+                        {
+                            smtp.EnableSsl = true;
+                            smtp.UseDefaultCredentials = false;
+                            smtp.Credentials = new NetworkCredential("ewetmarket@gmail.com", "dnnpsvsqsdkhyxsl");
+                            smtp.Host = "smtp.gmail.com";
+                            smtp.Port = 587;
+                            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                            smtp.Send(mail);
+                        }
+                        msg = "Please check your inbox/spam folder for your new password";
+                    }
                 }
                 else
                 {
