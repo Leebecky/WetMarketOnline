@@ -1,0 +1,216 @@
+﻿@using EWM.HelperClass
+@model EWM.Models.MstCustomer
+
+@{
+    ViewBag.Title = "Customer Profile";
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+}
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#state").val("@Model.State");
+
+        $("#btnSubmit").click(e => {
+            validateUsername();
+        })
+
+        $("#password").focusout(e => {
+            var password = $("#password").val();
+            if (password.length < 8) {
+                $("#passwordValidation").text("Password must have at least 8 characters!");
+            }
+        })
+
+        $("#password").on("input", () => {
+            var password = $("#password").val();
+
+            if (password.length >= 8) {
+                $("#passwordValidation").text("");
+            }
+        })
+
+        $("#btnShowPassword").click(e => {
+            displayPassword("password", "iconShowPassword");
+        })
+
+        $("#btnShowConfirmPassword").click(e => {
+            displayPassword("confirmPassword", "iconShowConfirmPassword");
+        })
+
+        $("#changePasswordBtn").click(e => {
+            if (validatePassword()) {
+                $("#ChangePasswordForm").submit();
+            }
+        })
+
+
+    })
+
+    // Show Passsword
+    function displayPassword(fieldName, btnName) {
+        var passwordField = document.getElementById(fieldName);
+        var passwordBtn = $("#" + btnName);
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            passwordBtn.removeClass("bi-eye-fill");
+            passwordBtn.addClass("bi-eye-slash-fill");
+            
+        } else {
+            passwordField.type = "password";
+            passwordBtn.removeClass("bi-eye-slash-fill");
+            passwordBtn.addClass("bi-eye-fill");
+        }
+    }
+
+    // Validate Username
+    function validateUsername() {
+        var customerId = $("#CustomerId").val();
+        var username = $("#Username").val();
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidateUsername")',
+                data: {
+                    username: username,
+                    customerId: customerId
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $("#MstCustomerForm").submit();
+                    }
+                }
+            });
+    }
+
+    // Validate password change
+    function validatePassword() {
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+        
+        if (password.length < 8) {
+            alert("Password must be at least 8 characters");
+            return false;
+        }
+
+        if (password != confirmPassword) {
+            alert("Password and Confirm Password do not match!");
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+<h2>Customer Profile - Edit</h2>
+<div class="text-end">
+    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordPopup">Change Password</button>
+</div>
+
+<div>
+    <hr />
+    @using (Html.BeginForm("SaveCustomerProfile", "MstCustomer", new { mode = pageMode }, FormMethod.Post, new { @id = "MstCustomerForm" }))
+    {
+        <div class="dl-horizontal">
+            @Html.TextBoxFor(model => model.CustomerId, new { @class = "d-none" })
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Username)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-control mb-3" })
+            </dd>
+
+            @*<dt>
+                    @Html.DisplayNameFor(model => model.Password)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Password)
+                </dd>*@
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control mb-3" })
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control mb-3" })
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.Address, new { @class = "form-control mb-3" })
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.State)
+            </dt>
+
+            <dd>
+                @*@Html.DropDownListFor(model => model.State, new SelectList(Enum.GetValues(typeof(GeneralBLL.States))), new { @class = "form-select" })*@
+                <select id="state" class="form-select mb-3" name="state" aria-label="Select State" required>
+                    <option value="Johor">Johor</option>
+                    <option value="Kedah">Kedah</option>
+                    <option value="Kelantan">Kelantan</option>
+                    <option value="Malacca">Malacca</option>
+                    <option value="Negeri Sembilan">Negeri Sembilan</option>
+                    <option value="Pahang">Pahang</option>
+                    <option value="Penang">Penang</option>
+                    <option value="Perlis">Perlis</option>
+                    <option value="Sabah">Sabah</option>
+                    <option value="Sarawak">Sarawak</option>
+                    <option value="Selangor">Selangor</option>
+                    <option value="Terengganu">Terengganu</option>
+                    <option value="Kuala Lumpur">Kuala Lumpur</option>
+                    <option value="Labuan">Labuan</option>
+                    <option value="Putrajaya">Putrajaya</option>
+                </select>
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Postcode)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.Postcode, new { @class = "form-control mb-3" })
+            </dd>
+            @*@Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" })*@
+        </div>
+    }
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
+
+    <a href='@Url.Action("MstCustomer")' class="btn btn-secondary px-4">Back</a>
+    <button class="btn btn-success px-4" id="btnSubmit" type="button" form="MstCustomerForm">Save</button>
+    @*@{
+            if (pageMode != "Details")
+            {
+                <button class="btn btn-success px-4" type="submit" form="MstProductForm">Submit</button>
+            }
+
+            if (pageMode == "Details")
+            {
+                <button class="btn btn-warning px-4" type="submit" form="MstProductForm">Edit</button>
+            }
+        }*@
+
+</div>
+
+@* Change Password Popup *@
+@{ Html.RenderPartial("ChangePassword_Customer"); }

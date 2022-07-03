@@ -14,8 +14,8 @@ namespace EWM.Models
         public string OrderDtlId { get; set; }
         public string OrderHdrId { get; set; }
         public string ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? Price { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
@@ -32,6 +32,18 @@ namespace EWM.Models
         private string OriCreatedBy { get; set; }
         private DateTime OriUpdatedDate { get; set; }
         private string OriUpdatedBy { get; set; }
+
+        // Additional Variables
+        private MstProduct OrderItem { get; set; }
+
+        #region Getters & Setters
+
+        public MstProduct GetOrderItem()
+        {
+            return OrderItem;
+        }
+
+        #endregion
 
         // Default Constructor
         public TxnOrderDtl() { }
@@ -99,8 +111,40 @@ namespace EWM.Models
 
             return data;
         }
-        #endregion
 
+        //? Retrieve Order details with Product Data
+        public static List<TxnOrderDtl> GetCompleteOrderDetails(string hdrId)
+        {
+            TxnOrderDtl dtl = new TxnOrderDtl();
+            dtl.OrderHdrId = hdrId;
+            List<TxnOrderDtl> dtlList = dtl.SelectTxnOrderDtl("All");
 
+            foreach (var item in dtlList)
+            {
+                item.OrderItem = MstProduct.GetCompleteProductData(item.ProductId, "Active");
+            }
+
+            return dtlList;
+        }
+
+        //? Retrieve Order details with Product Data based on merchant id
+        public static List<TxnOrderDtl> GetCompleteMerchantOrderDetails(string hdrId, string merchantId)
+        {
+            string sql = "Select d.* from txn_order_dtl d Inner Join mst_product p on p.product_id = d.product_id Where p.merchant_id = @merchantId and d.order_hdr_id = @orderHdrId";
+            SqlCommand cmd = new SqlCommand(sql);
+            cmd.Parameters.AddWithValue("@merchantId", merchantId);
+            cmd.Parameters.AddWithValue("@orderHdrId", hdrId);
+
+            List<TxnOrderDtl> dtlList = (List<TxnOrderDtl>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+
+            foreach (var item in dtlList)
+            {
+                item.OrderItem = MstProduct.GetCompleteProductData(item.ProductId, "Active");
+            }
+
+            return dtlList;
+        }
+
+        #endregion  
     }
 }

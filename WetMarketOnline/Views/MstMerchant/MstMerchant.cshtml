@@ -3,14 +3,23 @@
 }
 @*<a href='@Url.Action("ManageProduct", "MstMerchant")'>Manage Products</a>*@
 <div class="row row-cols-3 my-5 justify-content-center text-center">
-    <div class=" col card text-black me-lg-3" style="max-width: 250px;">
-        <a href='@Url.Action("ManageProduct", "MstMerchant")''>
+    <div class="col card text-black me-3" style="max-width: 250px;">
+        <a class="custom-link" href='@Url.Action("ManageProduct", "MstMerchant")'>
             @*<img src="~/Content/Img/Admin_ManageHome.png" class="card-img" alt="Manage Products Icon">*@
             <i class="bi bi-shop" style="font-size: 8rem; color: black;"></i>
+            <div class="card-body">
+                <h5 class="card-title">Manage Products</h5>
+            </div>
         </a>
-        <div class="card-body">
-            <h5 class="card-title">Manage Products</h5>
-        </div>
     </div>
 
+    <div class=" col card text-black me-3" style="max-width: 250px;">
+        <a class="custom-link" href='@Url.Action("OrderList_Merchant")'>
+            @*<img src="~/Content/Img/Admin_ManageHome.png" class="card-img" alt="Manage Products Icon">*@
+            <i class="bi bi-bag-fill" style="font-size: 8rem; color: black;"></i>
+            <div class="card-body">
+                <h5 class="card-title">View Orders</h5>
+            </div>
+        </a>
+    </div>
 </div>

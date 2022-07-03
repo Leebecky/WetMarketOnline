@@ -1,92 +1,30 @@
-﻿@model EWM.Models.MstCustomer
+﻿
+@model EWM.Models.MstCustomer
 
 @{
     ViewBag.Title = "Customer Profile";
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
 }
 
-<h2>Customer Profile</h2>
-
-<div>
-    <hr />
-    <div class="dl-horizontal">
-        @Html.TextBoxFor(model => model.CustomerId, new { @class = "d-none" })
-
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-
-        @*<dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>*@
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.State)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.State)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Postcode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Postcode)
-        </dd>
-        @*@Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" })*@
+<div class="row row-cols-2= my-5 justify-content-center text-center">
+    <div class="col card text-black me-3" style="max-width: 250px;">
+        <a class="custom-link" href='@Url.Action("CustomerProfile")'>
+            @*<img src="~/Content/Img/Admin_ManageHome.png" class="card-img" alt="Manage Products Icon">*@
+            <i class="bi bi-person" style="font-size: 8rem; color: black;"></i>
+            <div class="card-body">
+                <h5 class="card-title">Customer Profile</h5>
+            </div>
+        </a>
     </div>
-</div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
 
-    @*<a href='@Url.Action("ManageProduct")' class="btn btn-secondary px-4">Back</a>*@
-    <a href='@Url.Action("MstCustomer_Edit")' class="btn btn-warning px-4">Edit</a>
-
-    @*@{
-        if (pageMode != "Details")
-        {
-            <button class="btn btn-success px-4" type="submit" form="MstProductForm">Submit</button>
-        }
-         
-        if (pageMode == "Details")
-        {
-            <button class="btn btn-warning px-4" type="submit" form="MstProductForm">Edit</button>
-        }
-    }*@
-
+    <div class="col card text-black me-3" style="max-width: 250px;">
+        <a class="custom-link" href='@Url.Action("OrderList")'>
+            @*<img src="~/Content/Img/Admin_ManageHome.png" class="card-img" alt="Manage Products Icon">*@
+            <i class="bi bi-bag-fill" style="font-size: 8rem; color: black;"></i>
+            <div class="card-body">
+                <h5 class="card-title">View Orders</h5>
+            </div>
+        </a>
+    </div>
 </div>

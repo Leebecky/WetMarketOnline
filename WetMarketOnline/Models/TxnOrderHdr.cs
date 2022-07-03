@@ -37,6 +37,60 @@ namespace EWM.Models
         private DateTime OriUpdatedDate { get; set; }
         private string OriUpdatedBy { get; set; }
 
+        // Additional Variables
+        private List<TxnOrderDtl> OrderDetails { get; set; }
+        private string PromotionCode { get; set; }
+        private string CustomerName { get; set; }
+
+        #region Getters & Setters
+
+        public List<TxnOrderDtl> GetOrderDetails()
+        {
+            return OrderDetails;
+        }
+
+        public void SetOrderDetails(List<TxnOrderDtl> orderDtl)
+        {
+            OrderDetails = orderDtl;
+        }
+
+        public string GetPromotionCode()
+        {
+            return PromotionCode;
+        }
+
+        public void SetPromotionCode()
+        {
+            if (!string.IsNullOrEmpty(this.PromotionId))
+            {
+                MstPromotion promo = MstPromotion.GetMstPromotion(this.PromotionId);
+                PromotionCode = promo.PromotionCode;
+            }
+            else
+            {
+                PromotionCode = "";
+            }
+        }
+
+        public string GetCustomerName()
+        {
+            return CustomerName;
+        }
+
+        public void SetCustomerName()
+        {
+            if (!string.IsNullOrEmpty(this.CustomerId))
+            {
+                MstCustomer customer = MstCustomer.GetMstCustomer(this.CustomerId);
+                CustomerName = customer.Name;
+            }
+            else
+            {
+                CustomerName = "";
+            }
+        }
+        #endregion
+
         // Default Constructor
         public TxnOrderHdr() { }
 
@@ -52,6 +106,9 @@ namespace EWM.Models
 
             if (orderHdrList.Count == 1)
             {
+                orderHdrList[0].SetPromotionCode();
+                orderHdrList[0].SetCustomerName();
+                orderHdrList[0].OrderDetails = TxnOrderDtl.GetCompleteOrderDetails( orderHdrList[0].OrderHdrId);
                 return orderHdrList[0];
             }
             return null;
@@ -62,7 +119,7 @@ namespace EWM.Models
         //? Insert new record
         public int CreateTxnOrderHdr(string userName = "")
         {
-            this.Status = "Active";
+            this.Status = "Order Confirmed";
             this.CreatedDate = DateTime.Now;
             this.UpdatedDate = DateTime.Now;
             this.CreatedBy = userName;
@@ -102,6 +159,81 @@ namespace EWM.Models
             List<TxnOrderHdr> data = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
 
             return data;
+        }
+
+        public static List<TxnOrderHdr> GetCustomerOrder(string customerId, string status = "")
+        {
+            TxnOrderHdr orderHdr = new TxnOrderHdr();
+            orderHdr.CustomerId = customerId;
+
+            if (!string.IsNullOrEmpty(status) && status != "All")
+            {
+                orderHdr.Status = status;
+            }
+
+            List<TxnOrderHdr> orderHdrList = orderHdr.SelectTxnOrderHdr("All");
+
+            foreach (var order in orderHdrList)
+            {
+                order.SetPromotionCode();
+                order.OrderDetails = TxnOrderDtl.GetCompleteOrderDetails(order.OrderHdrId);
+            }
+            return orderHdrList;
+        }
+
+        public static List<TxnOrderHdr> GetAllOrders(string status = "")
+        {
+            List<TxnOrderHdr> orderHdrList = new List<TxnOrderHdr>();
+            TxnOrderHdr orderHdr = new TxnOrderHdr();
+
+            if (!string.IsNullOrEmpty(status) && status != "All")
+            {
+                orderHdr.Status = status;
+                orderHdrList = orderHdr.SelectTxnOrderHdr("All");
+            } else
+            {
+                SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, orderHdr, "All", "All");
+                orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            }
+
+
+            foreach (var order in orderHdrList)
+            {
+                order.SetPromotionCode();
+                order.SetCustomerName();
+                order.OrderDetails = TxnOrderDtl.GetCompleteOrderDetails(order.OrderHdrId);
+            }
+            return orderHdrList;
+        }
+
+        public static List<TxnOrderHdr> GetMerchantOrders(string merchantId, string status = "")
+        {
+            List<TxnOrderHdr> orderHdrList = new List<TxnOrderHdr>();
+            TxnOrderHdr orderHdr = new TxnOrderHdr();
+                       
+            // Looking for orders with products from a specific merchant
+            if (!string.IsNullOrEmpty(status) && status != "All")
+            {
+                string sql = "Select h.* from txn_order_hdr h Inner Join txn_order_dtl d on d.order_hdr_id = h.order_hdr_id Inner Join mst_product p on p.product_id = d.product_id Where p.merchant_id = @merchantId and h.status = @status";
+                SqlCommand cmd = new SqlCommand(sql);
+                cmd.Parameters.AddWithValue("@merchantId", merchantId);
+                cmd.Parameters.AddWithValue("@status", status);
+                orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            } else
+            {
+                string sql = "Select h.* from txn_order_hdr h Inner Join txn_order_dtl d on d.order_hdr_id = h.order_hdr_id Inner Join mst_product p on p.product_id = d.product_id Where p.merchant_id = @merchantId";
+                SqlCommand cmd = new SqlCommand(sql);
+                cmd.Parameters.AddWithValue("@merchantId", merchantId);
+                orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            }
+
+            foreach (var order in orderHdrList)
+            {
+                order.SetPromotionCode();
+                order.SetCustomerName();
+                order.OrderDetails = TxnOrderDtl.GetCompleteMerchantOrderDetails(order.OrderHdrId, merchantId);
+            }
+            return orderHdrList;
         }
         #endregion
     }
