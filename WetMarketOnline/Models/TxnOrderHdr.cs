@@ -64,7 +64,10 @@ namespace EWM.Models
             if (!string.IsNullOrEmpty(this.PromotionId))
             {
                 MstPromotion promo = MstPromotion.GetMstPromotion(this.PromotionId);
-                PromotionCode = promo.PromotionCode;
+                if (promo != null)
+                {
+                    PromotionCode = promo.PromotionCode;
+                }
             }
             else
             {
@@ -82,7 +85,10 @@ namespace EWM.Models
             if (!string.IsNullOrEmpty(this.CustomerId))
             {
                 MstCustomer customer = MstCustomer.GetMstCustomer(this.CustomerId);
-                CustomerName = customer.Name;
+                if (customer != null)
+                {
+                    CustomerName = customer.Name;
+                }
             }
             else
             {
@@ -108,7 +114,7 @@ namespace EWM.Models
             {
                 orderHdrList[0].SetPromotionCode();
                 orderHdrList[0].SetCustomerName();
-                orderHdrList[0].OrderDetails = TxnOrderDtl.GetCompleteOrderDetails( orderHdrList[0].OrderHdrId);
+                orderHdrList[0].OrderDetails = TxnOrderDtl.GetCompleteOrderDetails(orderHdrList[0].OrderHdrId);
                 return orderHdrList[0];
             }
             return null;
@@ -190,7 +196,8 @@ namespace EWM.Models
             {
                 orderHdr.Status = status;
                 orderHdrList = orderHdr.SelectTxnOrderHdr("All");
-            } else
+            }
+            else
             {
                 SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, orderHdr, "All", "All");
                 orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
@@ -210,7 +217,7 @@ namespace EWM.Models
         {
             List<TxnOrderHdr> orderHdrList = new List<TxnOrderHdr>();
             TxnOrderHdr orderHdr = new TxnOrderHdr();
-                       
+
             // Looking for orders with products from a specific merchant
             if (!string.IsNullOrEmpty(status) && status != "All")
             {
@@ -219,7 +226,8 @@ namespace EWM.Models
                 cmd.Parameters.AddWithValue("@merchantId", merchantId);
                 cmd.Parameters.AddWithValue("@status", status);
                 orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
-            } else
+            }
+            else
             {
                 string sql = "Select h.* from txn_order_hdr h Inner Join txn_order_dtl d on d.order_hdr_id = h.order_hdr_id Inner Join mst_product p on p.product_id = d.product_id Where p.merchant_id = @merchantId";
                 SqlCommand cmd = new SqlCommand(sql);

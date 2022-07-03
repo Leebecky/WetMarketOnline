@@ -51,7 +51,6 @@ namespace EWM.Models
         {
             MstPromotion promotion = new MstPromotion();
             promotion.PromotionId = promotionId;
-            //promotion.Amount = null;
 
             SqlCommand cmd = DatabaseManager.ConstructSqlCommand(ObjectName, promotion, filterType: "All");
             List<MstPromotion> promotionList = (List<MstPromotion>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
@@ -60,7 +59,7 @@ namespace EWM.Models
             {
                 return promotionList[0];
             }
-            return null;
+            return new MstPromotion();
         }
 
         #region Getter/Setter
