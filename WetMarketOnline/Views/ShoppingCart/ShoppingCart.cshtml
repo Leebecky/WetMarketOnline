@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Shopping Cart";
     string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
-
 }
 
 <script type="text/javascript">
@@ -23,6 +22,16 @@
                 $("#OrderForm").submit();
             } else {
                 alert("Please fill in all details!");
+            }
+        })
+
+        // Verifying that there are items in cart before opening payment popup
+        $("#btnCheckout").click(e => {
+            if ($("#emptyCart").length) {
+                alert("No items in cart!");
+                $("#paymentPopup").modal('hide');
+            } else {
+                $("#paymentPopup").modal('show');
             }
         })
     });
@@ -279,7 +288,7 @@
                 </div>
             }
             <div class="d-grid gap-2 mt-3">
-                <button class="btn btn-lg btn-dark text-white btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#paymentPopup">Checkout</button>
+                <button id="btnCheckout" class="btn btn-lg btn-dark text-white btn-outline-secondary"  data-bs-target="#paymentPopup">Checkout</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,90 @@
+﻿@using EWM.Models;
+@model TxnOrderHdr
+
+@{
+    ViewBag.Title = "Order Tracking";
+
+    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+
+    string confirmStatus = "active";
+    string pickUpStatus = "";
+    string shippingStatus = "";
+    string deliveryStatus = "";
+
+    if (Model.Status == "Picked Up")
+    {
+        pickUpStatus = "active";
+    }
+
+    if (Model.Status == "On the Way")
+    {
+        pickUpStatus = "active";
+        shippingStatus = "active";
+    }
+
+    if (Model.Status == "Delivered")
+    {
+        pickUpStatus = "active";
+        shippingStatus = "active";
+        deliveryStatus = "active";
+    }
+    //alter table txn_order_hdr alter column status varchar(100)
+
+} 
+
+@*<h2>OrderTracking</h2>*@
+
+<div class="container mb-4">
+    <article class="card">
+        <div class="card-body">
+            <h6>Order ID: #@Model.OrderHdrId</h6>
+            <article class="card">
+                <div class="card-body row">
+                    @*<div class="col"><strong>Estimated Delivery time:</strong> <br>29 nov 2019 </div>*@
+                    <div class="col"> <strong>Shipping By:</strong> <br> EWM Courier | <i class="bi bi-phone"></i> +60-123 5134 </div>
+                    <div class="col"> <strong>Status:</strong> <br> @Model.Status</div>
+                    @*<div class="col"> <strong>Tracking #:</strong> <br> BD045903594059 </div>*@
+                </div>
+            </article>
+            <hr />
+            <div class="track">
+                <div class="step @confirmStatus"> <span class="icon"> <i class="bi bi-check-lg"></i></span> <span class="text">Order confirmed</span> </div>
+                <div class="step @pickUpStatus"> <span class="icon"> <i class="bi bi-person-fill"></i> </span> <span class="text"> Picked by courier</span> </div>
+                <div class="step @shippingStatus"> <span class="icon"> <i class="bi bi-truck"></i> </span> <span class="text"> On the way </span> </div>
+                <div class="step @deliveryStatus"> <span class="icon"> <i class="bi bi-box2-fill"></i> </span> <span class="text">Delivered</span> </div>
+            </div>
+            <hr />
+            <ul class="track-item row">
+                @{
+                    foreach (var item in Model.GetOrderDetails())
+                    {
+                        MstProduct orderItem = item.GetOrderItem();
+                        MstProductImage img = (orderItem.GetImageList().Count <= 0) ? null : orderItem.GetImageList().OrderBy(l => l.ImageOrder).ToList()[0];
+                        string imgLink = (img != null) ? String.Concat(directory, img.FileLocation) : "";
+                        string desc = (img != null) ? img.ImageDesc : "Image not found";
+                        decimal price = Decimal.Round(orderItem.Price.Value, 2);
+
+                        <li class="col-md-4">
+                            <figure class="itemside mb-3">
+                                <div class="aside"><img src="@imgLink" alt="@desc" class="img-sm border"></div>
+                                <figcaption class="info align-self-center">
+                                    <p class="title">@orderItem.ProductName</p>
+                                    <p class="title text-muted">RM @price | @item.Quantity unit(s)</p>
+                                    <small class="text-muted">@orderItem.GetMerchantName()</small>
+                                </figcaption>
+                            </figure>
+                        </li>
+                    }
+                }
+            </ul>
+            @*<hr>
+            <div class="card-body row">
+                <div class="col"> <strong>Shipping Fee:</strong> <br> RM 5.00</div>
+                <div class="col"> <strong>Promotion:</strong> <br> @Model.GetPromotionCode() | RM @Math.Round(Model.Discount.Value, 2) </div>
+                <div class="col"> <strong>Order Total:</strong> <br> RM @Math.Round(Model.TotalPrice.Value, 2)</div>                
+            </div>*@
+            <hr>
+            <a href='@Url.Action("OrderList_Merchant")' class="btn btn-warning mt-5" data-abc="true"> <i class="bi bi-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
+</div>

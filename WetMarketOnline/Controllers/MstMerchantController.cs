@@ -320,6 +320,36 @@ namespace EWM.Controllers
             return Content("OK");
         }
 
+        //? Order List page
+        public ActionResult OrderList_Merchant()
+        {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Merchant")) { return RedirectToAction("Login", "Account"); }
+            return View();
+        }
+
+        public ActionResult OrderCard_MerchantPartial(string status = "")
+        {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Merchant")) { return RedirectToAction("Login", "Account"); }
+            MstMerchant member = (MstMerchant)Session["Account"];
+
+            List<TxnOrderHdr> orderList = TxnOrderHdr.GetMerchantOrders(member.MerchantId, status);            
+            orderList = orderList.OrderByDescending(l => l.UpdatedDate).ToList();
+            return PartialView(orderList);
+        }
+
+
+        //? Order Tracking page
+        public ActionResult OrderTracking_Merchant(string orderHdrId)
+        {
+            if (!GeneralBLL.VerifyAccessRight(Session["AccountType"], "Merchant")) { return RedirectToAction("Login", "Account"); }
+            MstMerchant member = (MstMerchant)Session["Account"];
+
+            TxnOrderHdr hdr = TxnOrderHdr.GetTxnOrderHdr(orderHdrId);
+            hdr.SetOrderDetails(TxnOrderDtl.GetCompleteMerchantOrderDetails(orderHdrId, member.MerchantId));
+
+            return View(hdr);
+        }
+
         //end class
     }
 }

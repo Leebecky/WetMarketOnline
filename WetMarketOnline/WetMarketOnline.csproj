@@ -348,7 +348,7 @@
     <Content Include="Views\MstMerchant\MstProduct_Details.cshtml" />
     <Content Include="Views\MstMerchant\ProductImage_PopupPartial.cshtml" />
     <Content Include="Views\MstMerchant\ProductImage_Partial.cshtml" />
-    <Content Include="Views\MstCustomer\MstCustomer_Edit.cshtml" />
+    <Content Include="Views\MstCustomer\CustomerProfile_Edit.cshtml" />
     <Content Include="Views\Product\ProductAll.cshtml" />
     <Content Include="Views\Product\ProductSingle.cshtml" />
     <Content Include="Views\Product\ProductFilter_Partial.cshtml" />
@@ -356,6 +356,16 @@
     <Content Include="Views\ShoppingCart\ShoppingCartItems.cshtml" />
     <Content Include="Views\Shared\_LayoutCart.cshtml" />
     <Content Include="Views\ShoppingCart\Payment_Popup.cshtml" />
+    <Content Include="Views\MstCustomer\OrderTracking.cshtml" />
+    <Content Include="Views\MstCustomer\OrderList.cshtml" />
+    <Content Include="Views\MstCustomer\CustomerProfile.cshtml" />
+    <Content Include="Views\MstCustomer\OrderCard_Partial.cshtml" />
+    <Content Include="Views\MstAdmin\OrderCard_AdminPartial.cshtml" />
+    <Content Include="Views\MstAdmin\OrderList_Admin.cshtml" />
+    <Content Include="Views\MstAdmin\OrderTracking_Admin.cshtml" />
+    <Content Include="Views\MstMerchant\OrderCard_MerchantPartial.cshtml" />
+    <Content Include="Views\MstMerchant\OrderList_Merchant.cshtml" />
+    <Content Include="Views\MstMerchant\OrderTracking_Merchant.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

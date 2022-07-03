@@ -1,0 +1,84 @@
+﻿
+@model EWM.Models.MstCustomer
+
+@{
+    ViewBag.Title = "Customer Profile";
+    string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
+    string accessMode = (ViewData["AccessMode"] == null) ? "Customer" : ViewData["AccessMode"].ToString();
+}
+
+<h2>Customer Profile</h2>
+
+<div>
+    <hr />
+    <div class="dl-horizontal">
+        @Html.TextBoxFor(model => model.CustomerId, new { @class = "d-none" })
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+
+        @*<dt>
+                @Html.DisplayNameFor(model => model.Password)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Password)
+            </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Postcode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Postcode)
+        </dd>
+        @*@Html.ActionLink("Edit", "MstCustomer", new { pageMode }, new { @class = "btn btn-warning px-4" })*@
+    </div>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+    @{
+        if (accessMode == "Customer")
+        {
+            <a href='@Url.Action("CustomerProfile_Edit")' class="btn btn-warning px-4">Edit</a>
+        }
+    }
+</div>

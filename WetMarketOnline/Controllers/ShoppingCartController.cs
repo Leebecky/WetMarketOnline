@@ -220,7 +220,7 @@ namespace EWM.Controllers
             Session["ShoppingCart"] = 0;
 
             // TODO Redirect to Order Summary page
-            return RedirectToAction("MstCustomer", "MstCustomer");
+            return RedirectToAction("OrderTracking", "MstCustomer", new { orderHdrId = orderHdr.OrderHdrId });
         }
     }
 }

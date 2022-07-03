@@ -348,7 +348,7 @@ namespace EWM.Controllers
                     smtp.Host = "smtp.gmail.com";
                     smtp.Port = 587;
                     smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new System.Net.NetworkCredential("fam.lee2866@gmail.com", "Photo Storage"); // Enter seders User name and password       
+                    smtp.Credentials = new System.Net.NetworkCredential("fam.lee2866@gmail.com", "Photo Storage"); // Enter senders User name and password       
                     smtp.EnableSsl = true;
                     smtp.Send(mail);
 

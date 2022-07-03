@@ -1,0 +1,43 @@
+﻿@using EWM.Models;
+@model List<TxnOrderHdr>
+@{
+    if (Model.Count == 0)
+    {
+        <h4><strong>No orders.</strong></h4>
+    }
+
+    foreach (var item in Model)
+    {
+        string iconClass = (item.Status == "Delivered") ? "bi-box2" : (item.Status == "Picked Up") ? "bi-person-fill" : (item.Status == "On the Way") ? "bi-truck" : "bi-check-lg";
+        decimal price = Math.Round(item.TotalPrice.Value, 2);
+
+        <div class="card mb-4">
+            <a id="orderLink" href='@Url.Action("OrderTracking_Admin", new { orderHdrId = item.OrderHdrId })'>
+                <div class="card-header bg-secondary bg-gradient text-white">
+                    Order Id: #@item.OrderHdrId
+                </div>
+            </a>
+            <div class="row g-0">
+                <div class="col-md-3 justify-content-center text-center m-auto">
+                    <a href='@Url.Action("OrderTracking_Admin", new { orderHdrId = item.OrderHdrId })' class="text-decoration-none text-reset">
+                        <span class="px-3 border border-1 border-dark rounded-3" style="font-size:5rem;">
+                            <i class="bi @iconClass"></i>
+                        </span>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <a id="customerProfileLink" href='@Url.Action("CustomerProfile", "MstCustomer", new {  pageMode = "Details", accessMode = "Admin", customerId = item.CustomerId })' class="">
+                            <h5 class="card-title">Customer: @item.GetCustomerName()</h5>
+                        </a>
+                        <p class="card-text">Order Date: @item.OrderDate.ToString("dd-MM-yyyy")</p>
+                        <p class="card-text">Status: @item.Status</p>
+                        <p class="card-text">Total: RM @price</p>
+                        <p class="card-text"><small class="text-muted">@item.GetOrderDetails().Count item(s)</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+}

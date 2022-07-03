@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Order List";
+}
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#orderFilter").change(e => {
+            filterOrders();
+        })
+    });
+
+    function filterOrders() {
+        var orderStatus = $("#orderFilter").val();
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("OrderCard_Partial")',
+                data: {
+                    status: orderStatus
+                },
+                dataType: "html",
+             success: function (result) {
+                 $("#OrderCard_Partial").html(result);                 
+                }
+            });
+    }
+</script>
+
+<h2>Orders</h2>
+<hr />
+@* Filter *@
+<div class="mb-5">
+
+<h6 class="title">Filter Order Status:</h6>
+<select id="orderFilter" class="form-select" aria-label="Select an order filter">
+    <option selected>All</option>
+    <option value="Order Confirmed">Order Confirmed</option>
+    <option value="Picked Up">Picked Up</option>
+    <option value="On the Way">On the Way</option>
+    <option value="Delivered">Delivered</option>
+</select>
+</div>
+
+@* Order List *@
+<div id="OrderCard_Partial">
+    @{Html.RenderAction("OrderCard_Partial");    }
+</div>

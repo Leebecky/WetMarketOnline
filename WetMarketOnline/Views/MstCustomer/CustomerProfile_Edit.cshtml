@@ -6,6 +6,40 @@
     string pageMode = (ViewData["PageMode"] == null) ? "Details" : ViewData["PageMode"].ToString();
 }
 
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#state").val("@Model.State");
+
+        $("#btnSubmit").click(e => {
+            validateUsername();
+        })
+    })
+
+    // Validate Username
+    function validateUsername() {
+        var customerId = $("#CustomerId").val();
+        var username = $("#Username").val();
+
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidateUsername")',
+                data: {
+                    username: username,
+                    customerId: customerId
+                },
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    } else {
+                        $("#MstCustomerForm").submit();
+                    }
+                }
+            });
+    }
+
+</script>
+
 <h2>Customer Profile - Edit</h2>
 
 <div>
@@ -20,7 +54,7 @@
             </dt>
 
             <dd>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
             </dd>
 
             @*<dt>
@@ -60,7 +94,24 @@
             </dt>
 
             <dd>
-                @Html.DropDownListFor(model => model.State, new SelectList(Enum.GetValues(typeof(GeneralBLL.States))), new { @class = "form-select" })
+                @*@Html.DropDownListFor(model => model.State, new SelectList(Enum.GetValues(typeof(GeneralBLL.States))), new { @class = "form-select" })*@
+                <select id="state" class="form-select mb-3" name="state" aria-label="Select State" required>
+                    <option value="Johor">Johor</option>
+                    <option value="Kedah">Kedah</option>
+                    <option value="Kelantan">Kelantan</option>
+                    <option value="Malacca">Malacca</option>
+                    <option value="Negeri Sembilan">Negeri Sembilan</option>
+                    <option value="Pahang">Pahang</option>
+                    <option value="Penang">Penang</option>
+                    <option value="Perlis">Perlis</option>
+                    <option value="Sabah">Sabah</option>
+                    <option value="Sarawak">Sarawak</option>
+                    <option value="Selangor">Selangor</option>
+                    <option value="Terengganu">Terengganu</option>
+                    <option value="Kuala Lumpur">Kuala Lumpur</option>
+                    <option value="Labuan">Labuan</option>
+                    <option value="Putrajaya">Putrajaya</option>
+                </select>
             </dd>
 
             <dt>
@@ -75,10 +126,10 @@
     }
 </div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+<div class="d-grid gap-2 d-md-flex justify-content-md-end my-5">
 
     <a href='@Url.Action("MstCustomer")' class="btn btn-secondary px-4">Back</a>
-    <button class="btn btn-success px-4" type="submit" form="MstCustomerForm">Save</button>
+    <button class="btn btn-success px-4" id="btnSubmit" type="button" form="MstCustomerForm">Save</button>
     @*@{
             if (pageMode != "Details")
             {
