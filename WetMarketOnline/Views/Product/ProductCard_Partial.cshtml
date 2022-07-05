@@ -26,7 +26,9 @@
             <!-- Card Reference: https://bootstrapious.com/p/bootstrap-cards-->
             <div class="card rounded shadow-sm border-0">
                 <div class="card-body p-4">
-                    <img src="@imgLink" alt="@desc" class="product-card-img img-fluid d-block mx-auto mb-3">
+                    <a href='@Url.Action("ProductSingle", new { productId = item.ProductId })' class="text-decoration-none text-reset">
+                        <img src="@imgLink" alt="@desc" class="product-card-img img-fluid d-block mx-auto mb-3">
+                    </a>
                     <h5> <a href='@Url.Action("ProductSingle", new { productId = item.ProductId })' class="text-dark">@item.ProductName</a></h5>
                     <p class="small text-muted font-italic">@item.ProductDesc.</p>
                     <p class="small text-muted font-italic">RM @price</p>

@@ -1,0 +1,95 @@
+﻿@using EWM.Models;
+@model MstProductReview
+
+@{
+    string productId = (ViewData["ProductId"] == null) ? "" : ViewData["ProductId"].ToString();
+    string readonlyReview = (ViewData["Readonly"] == null) ? "" : ViewData["Readonly"].ToString();
+    string disabledReview = (readonlyReview == "") ? "" : "disabled";
+
+    bool isLogin = (Session["Account"] == null) ? false : true;
+
+    string reviewMsg = (!isLogin) ? "Please login to leave a review" : (readonlyReview == "readonly") ? "The product must be purchased before reviewing" : "";
+}
+
+<div class="card mt-5 ms-md-3">
+    @*<div class="row" id="post-review-box">*@
+    <div class="col-md-12 ms-md-auto me-md-5 me-sm-0">
+        @using (Html.BeginForm("SubmitProductReview", "Product", FormMethod.Post, new { enctype = "multipart/form-data", @id = "ProductReviewForm" }))
+        {
+            <input id="ProductId" name="productId" type="hidden" value="@productId">
+            <input id="ReviewId" name="reviewId" type="hidden" value="@Model.ReviewId">
+
+            <div class="container mb-3">
+                <div class="row">
+                    <div class="col-md-2 col-sm-4 ">
+                        <button class="btn btn-info" type="button" id="btnProductReviewImage" @disabledReview>Upload Images</button>
+                        <input class="form-control visually-hidden" type="file" id="productReviewImage" name="productReviewImage" multiple>
+                    </div>
+
+                    <div class="col-md-8 col-sm-3">
+                        <span class="text-danger">@reviewMsg</span>
+                    </div>
+
+                    <div class="col-md-2 col-sm-5 rating">
+                        @{
+                            for (int i = 5; i >= 1; i--)
+                            {
+                                if (i == Model.RatingValue)
+                                {
+                                    <input type="radio" name="rating" value="@i" id="@i" checked @disabledReview><label for="@i">☆</label>
+                                }
+                                else
+                                {
+                                    <input type="radio" name="rating" value="@i" id="@i" @disabledReview><label for="@i">☆</label>
+                                }
+
+                            }
+                        }
+
+                        @*<input type="radio" name="rating" value="5" id="5" @disabledReview><label for="5">☆</label>
+                            <input type="radio" name="rating" value="4" id="4" @disabledReview><label for="4">☆</label>
+                            <input type="radio" name="rating" value="3" id="3" @disabledReview><label for="3">☆</label>
+                            <input type="radio" name="rating" value="2" id="2" @disabledReview><label for="2">☆</label>
+                            <input type="radio" name="rating" value="1" id="1" @disabledReview><label for="1">☆</label>*@
+
+                    </div>
+                </div>
+            </div>
+
+            <textarea class="form-control" cols="50" id="productReviewText" name="productReviewText" placeholder="Enter your review here..." rows="5" @readonlyReview>@Model.Review</textarea>
+            <input type="hidden" id="deleteReviewImage" name="deleteReviewImage" />
+            <div class="row text-left">
+                @{
+                    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+                    if (Model.GetReviewImages() != null)
+                    {
+                        foreach (var item in Model.GetReviewImages())
+                        {
+                            string url = String.Concat(directory, item.FileLocation);
+                            <div id="@item.ReviewImageId" class="position-relative img-button mx-3 mt-3">
+                                <button class="btn btn-outline-danger img-button" type="button" onclick="editReviewImage('@item.ReviewImageId')">
+                                    <img class="img-sm" src="@url">
+                                </button>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size:12px">
+                                    <i class="bi bi-x-lg"></i>
+                                </span>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+
+
+        }
+
+    </div>
+    <div class="text-end pe-md- mt-4">
+        @{
+            if (readonlyReview != "readonly")
+            {
+                <button id="btnCancelReview" class="btn btn-danger btn-sm" type="button" @disabledReview><i class="bi bi-x-lg me-2"></i>Cancel</button>
+            }
+        }
+        <button id="btnSubmitReview" class="btn btn-success" type="button" @disabledReview>Submit Review</button>
+    </div>
+</div>

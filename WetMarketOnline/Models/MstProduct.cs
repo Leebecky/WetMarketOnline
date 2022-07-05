@@ -36,7 +36,7 @@ namespace EWM.Models
         private List<MstCategory> CatList { get; set; }
         private List<MstProductImage> ImageList { get; set; }
         private List<MstProductReview> ReviewList { get; set; }
-        private List<MstProductReviewImage> ReviewImageList { get; set; }
+        private List<MstProductReviewImages> ReviewImageList { get; set; }
         private string MerchantName { get; set; }
 
         // Original Data
@@ -90,7 +90,7 @@ namespace EWM.Models
             return ReviewList;
         }
 
-        public List<MstProductReviewImage> GetReviewImageList()
+        public List<MstProductReviewImages> GetReviewImageList()
         {
             return ReviewImageList;
         }
@@ -103,7 +103,7 @@ namespace EWM.Models
 
         #region Methods
 
-        //? Insert new record
+        //? Innew record
         public int CreateMstProduct(string userName = "")
         {
             this.ProductId = (String.IsNullOrEmpty(this.ProductId)) ? Guid.NewGuid().ToString() : this.ProductId;

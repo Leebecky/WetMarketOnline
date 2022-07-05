@@ -9,12 +9,19 @@
     List<MstProductImage> productImages = Model.GetImageList();
     productImages = productImages.OrderBy(l => l.ImageOrder).ToList();
     int maxValue = Model.Quantity.Value;
+
+    bool customerHasReviewed = (ViewData["Reviewed"] == null) ? false : (bool)ViewData["Reviewed"];
+    bool customerHasPurchased = (ViewData["Purchased"] == null) ? false : (bool)ViewData["Purchased"];
+    string readonlyReview = (customerHasPurchased) ? "" : "readonly";
+    int reviewCount = (ViewData["ReviewCount"] == null) ? 0 : int.Parse(ViewData["ReviewCount"].ToString());
 }
 
 <script type="text/javascript">
 
     $(document).ready(() => {
-        $("#addItem").click(e => {
+        reviewDisplay("@customerHasPurchased", "@customerHasReviewed");
+
+        $("#addItem").click(e => { // Increment Item Unit
             var value = parseInt($("#itemValue").val());
             value += 1;
 
@@ -25,7 +32,7 @@
             $("#itemValue").val(value);
         })
 
-        $("#subItem").click(e => {
+        $("#subItem").click(e => { // Decrement Item Unit
             var value = parseInt($("#itemValue").val());
             value -= 1;
 
@@ -33,7 +40,7 @@
             $("#itemValue").val(value);
         })
 
-        $("#itemValue").change(e => {
+        $("#itemValue").change(e => { // Manual changing of item unit
             var value = parseInt($("#itemValue").val());
 
             if (isNaN($("#itemValue").val())) {
@@ -46,31 +53,55 @@
 
         });
 
-        $("#btnShoppingCart").click(e => {
+        $("#btnShoppingCart").click(e => { // Add to Shopping Cart button click
             addToShoppingCart();
         })
 
-        //$("#cartToastBtn").click(e => {
-        //    //const toast = new bootstrap.Toast($("#cartToast"))
-        //    //toast.show()
-        //        //const toast = new bootstrap.Toast($("#cartToast"))
-        //        //toast.show()
-        //    $('#ewmNavbar').load('#ewmNavbar', function () {
-        //        const toast = new bootstrap.Toast($("#cartToast"))
-        //        toast.show()
-        //    })
+        $("#btnProductReviewImage").click(e => { // Product Review - Upload image click
+            $("#productReviewImage").click();
+        });
+
+        $("#productReviewImage").change( // Image Upload
+            function () {
+                if ($(this).val() != "") {
+                    $("#btnProductReviewImage").addClass("btn-success");
+                    $("#btnProductReviewImage").removeClass("btn-info");
+                    $("#btnProductReviewImage").text("Image(s) Uploaded");
+                } else {
+                    $("#btnProductReviewImage").addClass("btn-info");
+                    $("#btnProductReviewImage").removeClass("btn-success");
+                    $("#btnProductReviewImage").text("Upload Image");
+                }
+            });
+
+        $("#btnSubmitReview").click(e => { // Submit Product Review
+            if (validateReview()) {
+                $("#ProductReviewForm").submit();
+            }
+        })
+
+        //$("#reviewText").change(e => { // Verify customer login before adding review
+        //    verifyLogin();
         //})
 
+        $("#btnReviewEdit").click(e => { // Edit Review
+            $("#productReviewDisplay").addClass("d-none");
+            $("#productReviewEdit").removeClass("d-none");
+        })
 
+        $("#btnCancelReview").click(e => { // Cancel Review Edit
+            $("#productReviewDisplay").removeClass("d-none");
+            $("#productReviewEdit").addClass("d-none");
+        })
     });
 
-    function changeImage(element) {
+    function changeImage(element) { // Swap thumbnail image
 
         var mainImage = document.getElementById('mainImage');
         mainImage.src = element.src;
     }
 
-    function addToShoppingCart() {
+    function addToShoppingCart() { // Add item to shopping cart
         var itemValue = parseInt($("#itemValue").val());
 
         if (isNaN(itemValue)) {
@@ -89,14 +120,72 @@
                     if (result != "Ok") {
                         alert(result);
                     } else {
-                        $('#navCart').load('#navCart #navCart', function () {
+                        $('#navCart').load('#navCart #navCart')
                             const toast = new bootstrap.Toast($("#cartToast"))
                             toast.show()
-                        })
                     }
                 }
             });
     }
+
+    @*function verifyLogin() {
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckCustomerLogin")',
+                dataType: "json",
+                success: function (result) {
+                    if (result != "Ok") {
+                        alert(result);
+                    }
+                }
+            });
+    }*@
+
+    function reviewDisplay(hasPurchased, hasReviewed) { // Review Display/Edit
+
+        if ((hasPurchased == "True" && hasReviewed == "False") || hasPurchased == "False") {
+            $("#productReviewEdit").removeClass("d-none");
+            $("#productReviewDisplay").addClass("d-none");
+        }
+
+        if (hasReviewed == "True") {
+            $("#productReviewEdit").addClass("d-none");
+            $("#productReviewDisplay").removeClass("d-none");
+        }
+    }
+
+    function validateReview() { // Check if all required review values are entered
+        if ($("#productReviewText").val() != "" && $("#productReviewText").val() != null) {
+            if ($("#1").prop("checked") || $("#2").prop("checked") || $("#3").prop("checked") || $("#4").prop("checked") || $("#5").prop("checked")) { return true; } else {
+                alert("Please provide a rating!");
+                return false;
+            }
+        } else {
+            alert("Please provide a review!");
+            return false;
+        }
+    }
+
+    function editReviewImage(reviewImageId) { // Add Review Image id to deletion queue
+        var confirmDelete = confirm("Are you sure you wish to remove this image?");
+
+        if (confirmDelete) {
+            var ids = $("#deleteReviewImage").val();
+
+            if (ids != "") {
+                ids = ids.concat(";", reviewImageId);
+                $("#deleteReviewImage").val(ids);
+            } else {
+                $("#deleteReviewImage").val(reviewImageId);
+            }
+
+            $("#"+reviewImageId).addClass("d-none")
+        } else {
+            return;
+        }
+        return;
+    }
+
 
 </script>
 
@@ -167,7 +256,7 @@
                                 }
                             }
                         </div>
-                        <span>0 reviews</span>
+                        <span>@reviewCount reviews</span>
                     </div>
                     <div class="mt-2 pr-3 content">
                         <p>@Model.GetMerchantName()</p>
@@ -181,7 +270,7 @@
                     </div>
 
                     @* Add to Cart *@
-                    <div class="buttons d-flex flex-row mt-5 gap-3">
+                    <div class="buttons d-flex flex-row mt-5 pb-sm-5 gap-3">
                         @{
                             if (maxValue <= 0)
                             {
@@ -190,15 +279,36 @@
                             }
                             else
                             {
-                                <button id="btnShoppingCart" class="btn btn-outline-dark">Add to Cart</button>
+                                <button id="btnShoppingCart" class="btn btn-outline-dark btn-lg">Add to Cart</button>
                             }
                         }
                         @*<button class="btn btn-dark">Add to Basket</button>*@
                     </div>
+
                 </div>
+            </div>
+            <div class="row g-0  pb-3 ms-sm-4 align-items-sm-center">
+
+                @*<div class="col-md-6 col-sm-10 mb-3">*@
+                <div class="col-11 border-top border-1 py-3">
+                    @{ Html.RenderAction("ProductReviewSummary_Partial", new { productId = Model.ProductId, rating = Model.Rating }); }
+                </div>
+
+                @*<div class="col-md-6 col-sm-10 mb-3 ">*@
+                <div id="productReviewEdit" class="col-11 border-top border-1">
+                    @{ Html.RenderAction("ProductReview_Partial", new { productId = Model.ProductId, readonlyReview }); }
+                </div>
+
+                <div id="productReviewDisplay" class="col-11">
+                    @{ Html.RenderAction("ProductReviewCustomer_Card", new { productId = Model.ProductId, displayLocation = "ProductSingle" }); }
+                </div>
+            </div>
+            <div class="my-3 ms-4 ps-md-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productReviewAllPopup">View All Reviews</button>
             </div>
         </div>
     </div>
+
 </div>
 @*<button type="button" class="btn btn-primary" id="cartToastBtn">Show live toast</button>*@
 
@@ -215,3 +325,5 @@
     </div>
 
 </div>
+
+@{ Html.RenderAction("ProductReviewAll_PopupPartial", new { productId = Model.ProductId }); }
