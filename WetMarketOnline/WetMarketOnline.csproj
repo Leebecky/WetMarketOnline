@@ -367,6 +367,10 @@
     <Content Include="Views\MstMerchant\OrderList_Merchant.cshtml" />
     <Content Include="Views\MstMerchant\OrderTracking_Merchant.cshtml" />
     <Content Include="Views\MstCustomer\ChangePassword_Customer.cshtml" />
+    <Content Include="Views\Product\ProductReviewCard_Partial.cshtml" />
+    <Content Include="Views\Product\ProductReviewSummary_Partial.cshtml" />
+    <Content Include="Views\Product\ProductReview_Partial.cshtml" />
+    <Content Include="Views\Product\ProductReviewAll_PopupPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Log Files\" />

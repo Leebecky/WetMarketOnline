@@ -55,7 +55,7 @@ namespace EWM.Controllers
             // File Path Configuration
             if (FormFileUpload != null)
             {
-                string fileName = formData.Filename;
+                string fileName = formData.Filename;    
                 fileExtension = Path.GetExtension(FormFileUpload.FileName);
 
                 //Add Current Date To Attached File Name : Filename_20220226.png

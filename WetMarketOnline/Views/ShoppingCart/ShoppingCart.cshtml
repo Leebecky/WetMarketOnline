@@ -10,6 +10,10 @@
     $(document).ready(() => {
         calculateCartTotal();
 
+        $("#OrderForm").keyup(function (e) {
+            return e.which !== 13
+        });
+
         $("#promoBtn").click(e => {
             verifyPromotion($("#promotionCode").val())
         })
@@ -201,6 +205,13 @@
                 },
                 dataType: "json",
              success: function (result) {
+                 if ($("#promotionId").val() != "") {
+                     $("#discount").val(0.00)
+                     $("#discountDisplay").text("RM 0.00")
+                     $("#promotionId").val("");
+                     calculateCartTotal();
+                 }
+
                     if (result.hasOwnProperty("PromotionId")) {
                         var promoDiscount = (result.Amount).toFixed(2);
                         var totalPrice = parseFloat($("#cartTotal").val())
@@ -288,7 +299,7 @@
                 </div>
             }
             <div class="d-grid gap-2 mt-3">
-                <button id="btnCheckout" class="btn btn-lg btn-dark text-white btn-outline-secondary"  data-bs-target="#paymentPopup">Checkout</button>
+                <button id="btnCheckout" class="btn btn-lg btn-dark text-white btn-outline-secondary" data-bs-target="#paymentPopup">Checkout</button>
             </div>
         </div>
     </div>

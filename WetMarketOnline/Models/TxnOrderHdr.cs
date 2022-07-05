@@ -243,6 +243,30 @@ namespace EWM.Models
             }
             return orderHdrList;
         }
+
+        // Check if customer has purchased a product
+        public static bool CheckCustomerProductOrders(string customerId, string productId)
+        {
+            List<TxnOrderHdr> orderHdrList = new List<TxnOrderHdr>();
+            TxnOrderHdr orderHdr = new TxnOrderHdr();
+
+            // Looking for orders with products from a specific merchant
+            
+            string sql = "Select h.* from txn_order_hdr h Inner Join txn_order_dtl d on d.order_hdr_id = h.order_hdr_id Inner Join mst_product p on p.product_id = d.product_id Where h.customer_id = @customerId and p.product_id = @productId";
+            SqlCommand cmd = new SqlCommand(sql);
+            cmd.Parameters.AddWithValue("@customerId", customerId);
+            cmd.Parameters.AddWithValue("@productId", productId);
+            int rowCount = DatabaseManager.ExecuteQueryCommand_RowsAffected(cmd, true);
+            //orderHdrList = (List<TxnOrderHdr>)DatabaseManager.ExecuteQueryCommand_Object(cmd, ObjectName, ListName);
+            
+           if (rowCount > 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
         #endregion
     }
 }
