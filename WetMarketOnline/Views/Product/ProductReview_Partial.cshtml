@@ -1,7 +1,7 @@
 ﻿@using EWM.Models;
 @model MstProductReview
 
-@{   
+@{
     string productId = (ViewData["ProductId"] == null) ? "" : ViewData["ProductId"].ToString();
     string readonlyReview = (ViewData["Readonly"] == null) ? "" : ViewData["Readonly"].ToString();
     string disabledReview = (readonlyReview == "") ? "" : "disabled";
@@ -57,11 +57,27 @@
             </div>
 
             <textarea class="form-control" cols="50" id="productReviewText" name="productReviewText" placeholder="Enter your review here..." rows="5" @readonlyReview>@Model.Review</textarea>
-
-            @*<div class="stars starrr" data-rating="0"></div>*@
-            @*<a class="btn btn-danger btn-sm" href="#" id="close-review-box"  margin-right: 10px;">
-                    <i class="bi bi-x-lg me-2"></i>Cancel
-                </a>*@
+            <input type="hidden" id="deleteReviewImage" name="deleteReviewImage" />
+            <div class="row text-left">
+                @{
+                    string directory = EWM.HelperClass.GeneralBLL.FileDirectory;
+                    if (Model.GetReviewImages() != null)
+                    {
+                        foreach (var item in Model.GetReviewImages())
+                        {
+                            string url = String.Concat(directory, item.FileLocation);
+                            <div id="@item.ReviewImageId" class="position-relative img-button mx-3 mt-3">
+                                <button class="btn btn-outline-danger img-button" type="button" onclick="editReviewImage('@item.ReviewImageId')">
+                                    <img class="img-sm" src="@url">
+                                </button>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size:12px">
+                                    <i class="bi bi-x-lg"></i>
+                                </span>
+                            </div>
+                        }
+                    }
+                }
+            </div>
 
 
         }

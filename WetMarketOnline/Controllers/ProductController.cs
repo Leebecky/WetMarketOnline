@@ -317,10 +317,14 @@ namespace EWM.Controllers
 
                 review.UpdateMstProductReview(member.Username);
 
-                // Delete all product review images
+                // Delete selected product review images
+                string[] imageDeleteList = collection.Get("deleteReviewImage").Split(';');
                 foreach (var item in review.GetReviewImages())
                 {
-                    item.DeleteMstProductReviewImage();
+                    if (imageDeleteList.Contains(item.ReviewImageId))
+                    {
+                        item.DeleteMstProductReviewImage();
+                    }
                 }
 
                 // Upload new product review images

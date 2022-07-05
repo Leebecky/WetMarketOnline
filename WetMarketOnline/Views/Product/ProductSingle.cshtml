@@ -80,9 +80,9 @@
             }
         })
 
-        $("#reviewText").change(e => { // Verify customer login before adding review
-            verifyLogin();
-        })
+        //$("#reviewText").change(e => { // Verify customer login before adding review
+        //    verifyLogin();
+        //})
 
         $("#btnReviewEdit").click(e => { // Edit Review
             $("#productReviewDisplay").addClass("d-none");
@@ -128,7 +128,7 @@
             });
     }
 
-    function verifyLogin() {
+    @*function verifyLogin() {
         $.ajax({
                 type: "POST",
                 url: '@Url.Action("CheckCustomerLogin")',
@@ -139,7 +139,7 @@
                     }
                 }
             });
-    }
+    }*@
 
     function reviewDisplay(hasPurchased, hasReviewed) { // Review Display/Edit
 
@@ -165,6 +165,28 @@
             return false;
         }
     }
+
+    function editReviewImage(reviewImageId) { // Add Review Image id to deletion queue
+        var confirmDelete = confirm("Are you sure you wish to remove this image?");
+
+        if (confirmDelete) {
+            var ids = $("#deleteReviewImage").val();
+
+            if (ids != "") {
+                ids = ids.concat(";", reviewImageId);
+                $("#deleteReviewImage").val(ids);
+            } else {
+                $("#deleteReviewImage").val(reviewImageId);
+            }
+
+            $("#"+reviewImageId).addClass("d-none")
+        } else {
+            return;
+        }
+        return;
+    }
+
+
 </script>
 
 <h2>@Model.ProductName</h2>
